@@ -1,6 +1,6 @@
 
 # Author: Felix A. Maldonado
-# Date: 3/2/2022 9:44 AM
+# Date: 3/2/2022
 
 # This script connects to Unicorn Hybrid Black EEG and sends periodic stimulations to external 
 # device for synchronization purposes using 2 processes. 
@@ -11,27 +11,25 @@ import time
 import matplotlib.pyplot as plt
 from pylsl import StreamInlet, resolve_stream
 from multiprocessing import Process
+from pyfirmata import Arduino
 
 global aborted
-DURATION = 5
+aborted = False
+DURATION = 10
 SAMPLING_FREQUENCY = 256
 DOWN_SAMP_RATIO = 256
-
-plt.style.use('dark_background')
 
 def stream():
     # setup pylsl connection
     print('STREAM STARTED...\n\n')
     streams = resolve_stream()
     inlet = StreamInlet(streams[0])
-
-    # trigger acquisition and record time
     aborted = False
+    # trigger acquisition and record time
     ABS_START_TIME = time.time()
 
     # create array to store signal and stimulation timestamps
     sig = []
-    stim = []
 
     while not aborted:
         # get current time to print out stats at end.
@@ -41,7 +39,6 @@ def stream():
         #print(sample[-1])
         if n_samples%(SAMPLING_FREQUENCY*DURATION) == 0: # once we reach total number of samples HAS BUG SKIPS LAST EEG SAMPLE
             aborted = True
-            run = False
             ABS_STOP_TIME = time.time()
 
             CORRECTED_TIME = ABS_STOP_TIME - ABS_START_TIME - inlet.time_correction()
@@ -55,49 +52,48 @@ def stream():
             print('Program ended...')
             print('=====================================')
             print('\n\n');
-
+    else:
+        print('Stream ended..')
+        print('\nPress CTRL + C to exit...\n')
 
 # sends arduino stimulation every second
 def send_stim():
-    ABS_START_TIME = time.time()
-    print(1)            # swap with board[pin].write(1)
-    time.sleep(1)  
-    while ((time.time() - ABS_START_TIME)<= DURATION):
-        print(0)        # swap with board[pin].write(0)
+    CALL_TIME = time.time()
+    #aborted = False
+    board = Arduino('COM5')
+    DELAY_TIME = time.time() - CALL_TIME
+    print('Board connected after %0.6f seconds..'%(DELAY_TIME))
+    while not aborted:
+        up = time.time()
+        board.digital[13].write(1)    # swap with board[pin].write(0)
         time.sleep(1)
-        print(1)
-        time.sleep(1)   # swap with board[pin].write(1)
+        board.digital[13].write(0)   
+        time.sleep(1)  # swap with board[pin].write(1)
+        print('stimulus delay:', time.time()-up - 2)
 
-    
 def main():
-    aborted = False
     run = True
     processes = []
-
     process_stream = Process(target=stream)
     process_stim = Process(target=send_stim)
     processes.append(process_stream)
     processes.append(process_stim)
 
-
     for process in processes:
         process.start()
-
     run = False
     if aborted:
-        thread_data.join()
-        thread_stim.join()
-
+        for process in processes:
+            process.terminate()
+            print('Terminating process')
 
 if __name__ == '__main__':
-    print('Press any key to start...')
+    print('\nPress any key to start...')
     msvcrt.getch()
     print('\n\n');
     print('================INPUT================')
     print('=Input fs: %0.1f'%SAMPLING_FREQUENCY)
     print('=Send Tobii stim every X seconds: %0.2f'%(SAMPLING_FREQUENCY/DOWN_SAMP_RATIO))
     print('=====================================')
-    print('\n\n');
-
+    print('\n\n')
     main()
-
