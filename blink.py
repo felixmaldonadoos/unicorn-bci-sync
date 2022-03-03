@@ -30,8 +30,9 @@ def main(N_STIMS = 10, DURATION = 10, DC_RATIO = 0.5):
     STARTTIME = time.time()
     RUNTIME = 0
     ARR_DELAY = []
+    ARR_TIME = []
     COUNT = 0
-
+    OUTPUT = []
     # sends stimuli and prints data while t < DURATION
     while (RUNTIME < DURATION ):
         UP = time.time()
@@ -40,13 +41,14 @@ def main(N_STIMS = 10, DURATION = 10, DC_RATIO = 0.5):
         board.digital[pin].write(0)
         time.sleep(OFFTIME)
         RUNTIME = time.time() - STARTTIME
-        ARR_DELAY.append(time.time() - UP - 1)
+        OUTPUT.append([(time.time()-STARTTIME),time.time() - UP - 1]) # real time sent, real delay
         COUNT += 1
         print('Stim # %0.1f sent at: %0.6f, Pulse delay(s): %0.6f'%(COUNT,RUNTIME,(time.time() - UP - 1)))
     else:
         run = False
         print('Average pulse delay (s): %0.6f'%(np.asarray(ARR_DELAY).mean()))
         print('\nENDED..\n')
+        print(np.asarray(OUTPUT))
 
 
 

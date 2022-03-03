@@ -4,11 +4,11 @@
 
 # This script connects to Unicorn Hybrid Black EEG and sends periodic stimulations to external 
 # device for synchronization purposes using 2 processes. 
-import pandas as pd 
+#import pandas as pd 
 import msvcrt
 import numpy as np
 import time
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 import os
 from pylsl import StreamInlet, resolve_stream
 from multiprocessing import Process, Value, Array
@@ -16,33 +16,38 @@ from pyfirmata import Arduino
 
 #===========================================================
 global aborted
-aborted = False
-DURATION = 6
+DURATION = 10
 SAMPLING_FREQUENCY = 256
 DOWN_SAMP_RATIO = 256
 #===========================================================
 
-
 def stream():
-    SAVE = False
+
     # setup pylsl connection
     print('STREAM STARTED...\n\n')
     streams = resolve_stream()
     inlet = StreamInlet(streams[0])
-    aborted = False
+
     # trigger acquisition and record time
     ABS_START_TIME = time.time()
 
     # create array to store signal and stimulation timestamps
     sig = []
 
+    aborted = False
     while not aborted:
+        print('\nat while aborted\n')
         # get current time to print out stats at end.
         sample, timestamp = inlet.pull_sample()
+        # print('got sample\n')
         sig.append(sample)
+        #print('appended sample\n') #works to here 2:36pm
         n_samples = len(sig)
-        print(sample)
-        if n_samples%(SAMPLING_FREQUENCY*DURATION+1) == 0:
+        print(aborted) #works to here 2:36pm
+        print(sample) #works to here 2:36pm
+
+        if n_samples%(SAMPLING_FREQUENCY*DURATION) == 0:
+            print('aborted')
             aborted = True
             ABS_STOP_TIME = time.time()
 
@@ -57,7 +62,8 @@ def stream():
             print('=====================================\n')
             print('Program ended...')
             print('\n')
-        return aborted,sig, SAVE
+    else:
+        return aborted,sig
 
 
 # sends arduino stimulation every second
@@ -92,9 +98,6 @@ def main():
 
     for process in processes:
         process.start()
-
-    for process in processes:
-        process.join()
 
 def save_to_csv(**kwargs):
     for arg in kwargs.values:
