@@ -4,22 +4,24 @@
 
 # This script connects to Unicorn Hybrid Black EEG and sends periodic stimulations to external 
 # device for synchronization purposes using 2 processes. 
-
+import pandas as pd 
 import msvcrt
 import numpy as np
 import time
 import matplotlib.pyplot as plt
+import os
 from pylsl import StreamInlet, resolve_stream
 from multiprocessing import Process
 from pyfirmata import Arduino
 
 global aborted
 aborted = False
-DURATION = 10
+DURATION = 4
 SAMPLING_FREQUENCY = 256
 DOWN_SAMP_RATIO = 256
 
 def stream():
+    SAVE = False
     # setup pylsl connection
     print('STREAM STARTED...\n\n')
     streams = resolve_stream()
@@ -49,13 +51,11 @@ def stream():
             print('Corrected time: %0.6f'%(CORRECTED_TIME))
             print('Absolute error: %0.6f'%(EXPECTED_TIME - CORRECTED_TIME))
             print('True fs: %0.6f'%(len(sig)/CORRECTED_TIME), end='\n')
+            print('=====================================\n')
             print('Program ended...')
-            print('=====================================')
-            print('\n\n');
+            print('\n')
     else:
-        print('Stream ended..')
-        time.sleep(1)
-        return aborted
+        return aborted,sig
 
 # sends arduino stimulation every second
 def send_stim():
@@ -73,8 +73,7 @@ def send_stim():
         board.digital[13].write(0)   
         time.sleep(1)  # swap with board[pin].write(1)
         print('rising to falling edge delay:', time.time()-up - 2)
-
-    print('out of loop!')
+        # cut fist sig[-Delay*fps::] 
 
 def main():
     run = True
@@ -86,12 +85,6 @@ def main():
 
     for process in processes:
         process.start()
-    run = False
-    if aborted:
-        print('FINAL ABORTED!')
-        for process in processes:
-            process.terminate()
-            print('Terminating process')
 
 if __name__ == '__main__':
     print('\nPress any key to start...')
