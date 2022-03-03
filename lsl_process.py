@@ -36,8 +36,8 @@ def stream():
         sample, timestamp = inlet.pull_sample()
         sig.append(sample)
         n_samples = len(sig)
-        #print(sample[-1])
-        if n_samples%(SAMPLING_FREQUENCY*DURATION) == 0: # once we reach total number of samples HAS BUG SKIPS LAST EEG SAMPLE
+        print(sample)
+        if n_samples%(SAMPLING_FREQUENCY*DURATION+1) == 0:
             aborted = True
             ABS_STOP_TIME = time.time()
 
@@ -54,22 +54,27 @@ def stream():
             print('\n\n');
     else:
         print('Stream ended..')
-        print('\nPress CTRL + C to exit...\n')
+        time.sleep(1)
+        return aborted
 
 # sends arduino stimulation every second
 def send_stim():
     CALL_TIME = time.time()
     #aborted = False
     board = Arduino('COM5')
+    board.digital[13].write(0)
     DELAY_TIME = time.time() - CALL_TIME
-    print('Board connected after %0.6f seconds..'%(DELAY_TIME))
-    while not aborted:
+    print('Board connected after %0.6f seconds..'%(DELAY_TIME)) # there is usually a ~5s delay to connect to arduino
+    #maybe create a numpy array and append the first samples, by adding delay time as 0s 5*
+    while ((time.time() - CALL_TIME - DELAY_TIME)<= DURATION):
         up = time.time()
         board.digital[13].write(1)    # swap with board[pin].write(0)
         time.sleep(1)
         board.digital[13].write(0)   
         time.sleep(1)  # swap with board[pin].write(1)
-        print('stimulus delay:', time.time()-up - 2)
+        print('rising to falling edge delay:', time.time()-up - 2)
+
+    print('out of loop!')
 
 def main():
     run = True
@@ -83,6 +88,7 @@ def main():
         process.start()
     run = False
     if aborted:
+        print('FINAL ABORTED!')
         for process in processes:
             process.terminate()
             print('Terminating process')
