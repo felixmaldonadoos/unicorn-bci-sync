@@ -16,7 +16,7 @@ from pyfirmata import Arduino
 
 global aborted
 aborted = False
-DURATION = 4
+DURATION = 6
 SAMPLING_FREQUENCY = 256
 DOWN_SAMP_RATIO = 256
 
@@ -54,8 +54,8 @@ def stream():
             print('=====================================\n')
             print('Program ended...')
             print('\n')
-    else:
-        return aborted,sig
+        return aborted,sig, SAVE
+
 
 # sends arduino stimulation every second
 def send_stim():
@@ -74,6 +74,10 @@ def send_stim():
         time.sleep(1)  # swap with board[pin].write(1)
         print('rising to falling edge delay:', time.time()-up - 2)
         # cut fist sig[-Delay*fps::] 
+    else:
+        RUNTIME = time.time() - CALL_TIME - DELAY_TIME
+        print('Arduino Runtime: %d seconds'%RUNTIME)
+        return DELAY_TIME,RUNTIME # add to final csv 
 
 def main():
     run = True
@@ -85,6 +89,11 @@ def main():
 
     for process in processes:
         process.start()
+
+def save_to_csv(**kwargs):
+    for arg in kwargs.values:
+        if arg[1] == True:
+            pd.DataFrame(np_array).to_csv("path/to/file.csv")
 
 if __name__ == '__main__':
     print('\nPress any key to start...')
