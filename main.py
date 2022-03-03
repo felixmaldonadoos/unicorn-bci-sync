@@ -40,7 +40,7 @@ def stream():
         sample, timestamp = inlet.pull_sample()
         sig.append(sample)
         n_samples = len(sig)
-        #print(sample) #works to here 2:36pm
+        print(sample) #works to here 2:36pm
         if n_samples%(SAMPLING_FREQUENCY*DURATION) == 0:
             print('aborted')
             aborted = True
@@ -65,25 +65,31 @@ def stream():
 # sends arduino stimulation every second
 #===========================================================
 def send_stim():
-    run = True
-    CALL_TIME = time.time()
-    board = Arduino('COM5') # takes approx 5.002-5.0004 second delay to connect
-    board.digital[13].write(0)
-    DELAY_TIME = time.time() - CALL_TIME
-    print('Board connected after %0.6f seconds..'%(DELAY_TIME)) # there is usually a ~5s delay to connect to arduino
-    #maybe create a numpy array and append the first samples, by adding delay time as 0s 5*
-    while ((time.time() - CALL_TIME - DELAY_TIME)<= DURATION):
-        up = time.time()
-        board.digital[13].write(1)    
-        time.sleep(1)
-        board.digital[13].write(0)   
-        time.sleep(1) 
-        print('rising to falling edge delay:', time.time()-up - 2)
-        # cut fist sig[-Delay*fps::] 
+    try:
+        board = Arduino('COM5')
+    except:
+        print('ERROR: Arduino not connected...\n')
+        print('Continuing data collection without external stimuli...\n')
     else:
-        RUNTIME = time.time() - CALL_TIME - DELAY_TIME
-        print('Arduino Runtime: %d seconds'%RUNTIME)
-        return DELAY_TIME,RUNTIME # add to final csv 
+        run = True
+        CALL_TIME = time.time()
+        board = Arduino('COM5') # takes approx 5.002-5.0004 second delay to connect
+        board.digital[13].write(0)
+        DELAY_TIME = time.time() - CALL_TIME
+        print('Board connected after %0.6f seconds..'%(DELAY_TIME)) # there is usually a ~5s delay to connect to arduino
+        #maybe create a numpy array and append the first samples, by adding delay time as 0s 5*
+        while ((time.time() - CALL_TIME - DELAY_TIME)<= DURATION):
+            up = time.time()
+            board.digital[13].write(1)    
+            time.sleep(1)
+            board.digital[13].write(0)   
+            time.sleep(1) 
+            print('rising to falling edge delay:', time.time()-up - 2)
+            # cut fist sig[-Delay*fps::] 
+        else:
+            RUNTIME = time.time() - CALL_TIME - DELAY_TIME
+            print('Arduino Runtime: %d seconds'%RUNTIME)
+            return DELAY_TIME,RUNTIME # add to final csv 
 
 #===========================================================
 # main function
@@ -108,6 +114,7 @@ def save_to_csv(**kwargs):
     for arg in kwargs.values:
         if arg[1] == True:
             pd.DataFrame(np_array).to_csv("path/to/file.csv")
+
 
 if __name__ == '__main__':
     print('\nPress any key to start...')
