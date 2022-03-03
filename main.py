@@ -11,14 +11,17 @@ import time
 import matplotlib.pyplot as plt
 import os
 from pylsl import StreamInlet, resolve_stream
-from multiprocessing import Process
+from multiprocessing import Process, Value, Array
 from pyfirmata import Arduino
 
+#===========================================================
 global aborted
 aborted = False
 DURATION = 6
 SAMPLING_FREQUENCY = 256
 DOWN_SAMP_RATIO = 256
+#===========================================================
+
 
 def stream():
     SAVE = False
@@ -89,6 +92,9 @@ def main():
 
     for process in processes:
         process.start()
+
+    for process in processes:
+        process.join()
 
 def save_to_csv(**kwargs):
     for arg in kwargs.values:
