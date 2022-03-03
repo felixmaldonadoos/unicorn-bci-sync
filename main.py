@@ -36,16 +36,11 @@ def stream():
 
     aborted = False
     while not aborted:
-        print('\nat while aborted\n')
         # get current time to print out stats at end.
         sample, timestamp = inlet.pull_sample()
-        # print('got sample\n')
         sig.append(sample)
-        #print('appended sample\n') #works to here 2:36pm
         n_samples = len(sig)
-        print(aborted) #works to here 2:36pm
-        print(sample) #works to here 2:36pm
-
+        #print(sample) #works to here 2:36pm
         if n_samples%(SAMPLING_FREQUENCY*DURATION) == 0:
             print('aborted')
             aborted = True
@@ -62,25 +57,27 @@ def stream():
             print('=====================================\n')
             print('Program ended...')
             print('\n')
+        
     else:
         return aborted,sig
 
-
+#===========================================================
 # sends arduino stimulation every second
+#===========================================================
 def send_stim():
+    run = True
     CALL_TIME = time.time()
-    #aborted = False
-    board = Arduino('COM5')
+    board = Arduino('COM5') # takes approx 5.002-5.0004 second delay to connect
     board.digital[13].write(0)
     DELAY_TIME = time.time() - CALL_TIME
     print('Board connected after %0.6f seconds..'%(DELAY_TIME)) # there is usually a ~5s delay to connect to arduino
     #maybe create a numpy array and append the first samples, by adding delay time as 0s 5*
     while ((time.time() - CALL_TIME - DELAY_TIME)<= DURATION):
         up = time.time()
-        board.digital[13].write(1)    # swap with board[pin].write(0)
+        board.digital[13].write(1)    
         time.sleep(1)
         board.digital[13].write(0)   
-        time.sleep(1)  # swap with board[pin].write(1)
+        time.sleep(1) 
         print('rising to falling edge delay:', time.time()-up - 2)
         # cut fist sig[-Delay*fps::] 
     else:
@@ -88,8 +85,13 @@ def send_stim():
         print('Arduino Runtime: %d seconds'%RUNTIME)
         return DELAY_TIME,RUNTIME # add to final csv 
 
+#===========================================================
+# main function
+#===========================================================
 def main():
     run = True
+
+    ret_value = Value("f",1.1,lock=False)
     processes = []
     process_stream = Process(target=stream)
     process_stim = Process(target=send_stim)
@@ -99,6 +101,9 @@ def main():
     for process in processes:
         process.start()
 
+#===========================================================
+#
+#===========================================================
 def save_to_csv(**kwargs):
     for arg in kwargs.values:
         if arg[1] == True:
@@ -114,3 +119,9 @@ if __name__ == '__main__':
     print('=====================================')
     print('\n\n')
     main()
+    
+#===========================================================
+# not implementing yet
+#===========================================================
+
+# make a concurrent.futures.processpool to extract sig and delay arrays, to save to csv
