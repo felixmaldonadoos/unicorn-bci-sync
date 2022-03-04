@@ -26,7 +26,7 @@ def stream():
         streams = resolve_stream()
         inlet = StreamInlet(streams[0])
     except:
-        print('No device found...\n\nMake sure the following are met: \n- Native bluetooth driver is turned off \n- Unicorn is connected \n- OpenVibe is Connected and Playing\n')
+        print('\nNo device found...\n\nMake sure the following are met: \n- Native bluetooth driver is turned off \n- Unicorn is connected \n- OpenVibe is Connected and Playing\n')
         return
     # trigger acquisition and record time
     ABS_START_TIME = time.time()
