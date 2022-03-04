@@ -60,10 +60,6 @@ def stream():
         
     else:
         return aborted,sig,CORRECTED_TIME, EXPECTED_TIME
-   
-
-
-    
 
 #===========================================================
 # sends arduino stimulation every second
@@ -116,15 +112,13 @@ def main():
         process.start()
 
 #===========================================================
-#
+# not implemented yet, will do after delays are quantified 
+# and corrected in the numpy array
 #===========================================================
-
-
 def save_to_csv(**kwargs):
     for arg in kwargs.values:
         if arg[1] == True:
             pd.DataFrame(np_array).to_csv("path/to/file.csv")
-
 
 if __name__ == '__main__':
     print('\nPress any key to start...')
@@ -137,7 +131,6 @@ if __name__ == '__main__':
     main()
     
 #===========================================================
-# not implementing yet
+# Comments to add in the future:
 #===========================================================
-
 # make a concurrent.futures.processpool to extract sig and delay arrays, to save to csv
