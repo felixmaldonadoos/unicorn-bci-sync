@@ -13,7 +13,6 @@
 
 import time
 from pylsl import StreamInlet, resolve_stream, local_clock
-#from multiprocessing import Process, Value, Array
 from pyfirmata import Arduino
 
 # stream params
@@ -21,7 +20,7 @@ streams = resolve_stream()
 inlet = StreamInlet(streams[0])
 
 # main function 
-def main(PIN=13,N_STIMS = 5, ONTIME = 0.2,OFFTIME = 5):
+def main(PIN=13,N_STIMS = 5, ONTIME = 0.2):
     STARTTIME = local_clock()
     COUNT = 0 
     #SAMPLE = None
@@ -58,7 +57,6 @@ if __name__ == '__main__':
     print('Stim # {COUNT} recieved at {ELAPSEDTIME} s & Arduino stim sent at {RUNTIME} s with delay (Arduino - Stim): {RUNTIME - ELAPSEDTIME} s\n')
     time.sleep(5.5)
     main()
-
 
 ## PS ON pylsl DOCUMENTATION
 #
