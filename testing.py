@@ -59,7 +59,6 @@ if __name__ == '__main__':
     time.sleep(5.5)
     main()
 
-
 # NOTE 1
     # want to test in oscilloscope if it is makes a difference to bring 1 to 0 now or after if stmnt. 
     # i expect it slows down signal. but my read times were from before write(0), so then again there 
