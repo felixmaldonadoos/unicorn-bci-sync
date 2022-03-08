@@ -23,20 +23,21 @@ inlet = StreamInlet(streams[0])
 def main(PIN=13,N_STIMS = 5, ONTIME = 0.2):
     STARTTIME = local_clock()
     COUNT = 0 
-    #SAMPLE = None
-    #STIM_RECVD = (str(type(SAMPLE)) == ("<class 'list'>")) # [####] sent from OpenVibe
+    
     while COUNT < N_STIMS:
         # collect sample
         board.digital[PIN].write(0)
         SAMPLE, TIMESTAMP = inlet.pull_sample()
         # sample time (experimental)
         ELAPSEDTIME = (TIMESTAMP + inlet.time_correction())- STARTTIME
-        #DELAY = inlet.time_correction()
+        # boolean to check if stim was recieved
         STIM_RECVD = (str(type(SAMPLE)) == ("<class 'list'>")) # [####] sent from OpenVibe
         if STIM_RECVD:
+            # rising time
             UP = local_clock()
             board.digital[PIN].write(1)
             time.sleep(ONTIME)
+            # SEE NOTE 1
             #board.digital[PIN].write(0)
             RUNTIME = UP - STARTTIME
             COUNT += 1
@@ -47,22 +48,26 @@ def main(PIN=13,N_STIMS = 5, ONTIME = 0.2):
         #print(OUTPUT)
 
 if __name__ == '__main__':
-    print('\n===================================================\n')
+    print('\n===================================================')
     print('Simple code to test Tobii synchronization.\nIntented to compare time stimulus is sent and recieved.\n')
     print('Defaults to:\n- PIN = 13\n- N_STIMS = 5\n- ONTIME = 0.2 s')
     print('===================================================\n')
     # arduino params
     board = Arduino('COM5')
-    print('\nConnected to arduino...\nPausing for 5.5 seconds...\n')
-    print('Stim # {COUNT} recieved at {ELAPSEDTIME} s & Arduino stim sent at {RUNTIME} s with delay (Arduino - Stim): {RUNTIME - ELAPSEDTIME} s\n')
+    print('\nConnected to arduino...\n\nPausing for 5.5 seconds...\n')
+    print('Stim # {COUNT} recieved at {ELAPSEDTIME} s & Arduino stim sent at {RUNTIME} s with delay (Arduino - Stim): {RUNTIME - ELAPSEDTIME} s')
     time.sleep(5.5)
     main()
 
-## PS ON pylsl DOCUMENTATION
-#
-#        def time_correction(self, timeout=FOREVER):
-#            Retrieve an estimated time correction offset for the given stream.
-#            The first call to this function takes several miliseconds until a 
-#            reliable first estimate is obtained. Subsequent calls are instantaneous 
-#            (and rely on periodic background updates). The precision of these 
-#            estimates should be below 1 ms (empirically within +/-0.2 ms).
+
+# NOTE 1
+    # want to test in oscilloscope if it is makes a difference to bring 1 to 0 now or after if stmnt. 
+    # i expect it slows down signal. but my read times were from before write(0), so then again there 
+    # may be no delay
+# NOTE 2
+# def time_correction(self, timeout=FOREVER):
+    # Retrieve an estimated time correction offset for the given stream.
+    # The first call to this function takes several miliseconds until a 
+    # reliable first estimate is obtained. Subsequent calls are instantaneous 
+    # (and rely on periodic background updates). The precision of these 
+    # estimates should be below 1 ms (empirically within +/-0.2 ms).
