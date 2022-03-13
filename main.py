@@ -4,7 +4,7 @@
 
 # This script connects to Unicorn Hybrid Black EEG and sends periodic stimulations to external 
 # device for synchronization purposes using 2 processes. 
-#import pandas as pd 
+import pandas as pd 
 import msvcrt
 import numpy as np
 import time
@@ -15,9 +15,9 @@ from pyfirmata import Arduino
 
 #===========================================================
 global aborted
-DURATION = 10
+DURATION = 5
 SAMPLING_FREQUENCY = 256
-DOWN_SAMP_RATIO = 256
+STIM_PERIOD = 1
 #===========================================================
 def stream():
     try:
@@ -25,47 +25,50 @@ def stream():
         print('Trying to connect to stream...\n')
         streams = resolve_stream()
         inlet = StreamInlet(streams[0])
-    except:
-        print('\nNo device found...\n\nMake sure the following are met: \n- Native bluetooth driver is turned off \n- Unicorn is connected \n- OpenVibe is Connected and Playing\n')
-        return
-    # trigger acquisition and record time
-    ABS_START_TIME = time.time()
 
-    # create array to store signal and stimulation timestamps
-    sig = []
+        # trigger acquisition and record time
+        ABS_START_TIME = time.time()
 
-    aborted = False
-    while not aborted:
-        # get current time to print out stats at end.
-        sample, timestamp = inlet.pull_sample()
-        sig.append(sample)
+        # create array to store signal and stimulation timestamps
+        sig = []
 
-        n_samples = len(sig)
+        aborted = False
+        while not aborted:
+            # get current time to print out stats at end.
+            sample, timestamp = inlet.pull_sample()
+            sig.append(sample)
 
-        #print(sample) #works to here 2:36pm
-        if n_samples%(SAMPLING_FREQUENCY*DURATION) == 0:
-            aborted = True
-            ABS_STOP_TIME = time.time()
+            n_samples = len(sig)
 
-            CORRECTED_TIME = ABS_STOP_TIME - ABS_START_TIME - inlet.time_correction()
-            EXPECTED_TIME = ABS_STOP_TIME - ABS_START_TIME
-            print('\nOpenVibe LSL stream ended..\n')
-            print('===============OUTPUT================')
-            print('Absolute time: %0.6f'%(EXPECTED_TIME))
-            print('Corrected time: %0.6f'%(CORRECTED_TIME))
-            print('Absolute error: %0.6f'%(EXPECTED_TIME - CORRECTED_TIME))
-            print('Number of Samples: %0.6f'%(len(sig)))
-            print('True fs: %0.6f'%(len(sig)/CORRECTED_TIME), end='\n')
-            print('=====================================\n')
+            print(sample)
+            if n_samples%(5) == 0:
+                aborted = True
+                run = False
+                ABS_STOP_TIME = time.time()
+
+                CORRECTED_TIME = ABS_STOP_TIME - ABS_START_TIME - inlet.time_correction()
+                EXPECTED_TIME = ABS_STOP_TIME - ABS_START_TIME
+                print('\nOpenVibe LSL stream ended..\n')
+                print('===============OUTPUT================')
+                print('Absolute time: %0.6f'%(EXPECTED_TIME))
+                print('Corrected time: %0.6f'%(CORRECTED_TIME))
+                print('Absolute error: %0.6f'%(EXPECTED_TIME - CORRECTED_TIME))
+                print('Number of Samples: %0.6f'%(len(sig)))
+                print('True fs: %0.6f'%(len(sig)/CORRECTED_TIME), end='\n')
+                print('=====================================\n')
         
-    else:
-        return aborted,sig,CORRECTED_TIME, EXPECTED_TIME
-
+        else:
+            return aborted,sig,CORRECTED_TIME, EXPECTED_TIME,run
+    except:
+        aborted = True
+        run = False
+        print('\nNo device found...\n\nMake sure the following are met: \n- Native bluetooth driver is turned off \n- Unicorn is connected \n- OpenVibe is Connected and Playing\n')
+        return sig
 #===========================================================
 # sends arduino stimulation every second
 #===========================================================
-CALL_TIME = time.time()
 def send_stim():
+    CALL_TIME = time.time()
     try:
         board = Arduino('COM5')
     except:
@@ -85,7 +88,7 @@ def send_stim():
             time.sleep(1)
             board.digital[13].write(0)   
             time.sleep(1) 
-            print('rising to falling edge delay:', time.time()-up - 2)
+            print('Peak-to-peak delay:', time.time()-up - 2)
             # cut fist sig[-Delay*fps::] 
         else:
             RUNTIME = time.time() - CALL_TIME - DELAY_TIME
@@ -103,10 +106,10 @@ def main():
     processes = []
     process_stream = Process(target=stream)
     process_stim = Process(target=send_stim)
-    #process_info = Process(target=send_info)
+    process_save = Process(target=save_to_csv)
     processes.append(process_stream)
     processes.append(process_stim)
-    #processes.append(process_info)
+    processes.append(process_save)
 
     for process in processes:
         process.start()
@@ -116,9 +119,20 @@ def main():
 # and corrected in the numpy array
 #===========================================================
 def save_to_csv(**kwargs):
-    for arg in kwargs.values:
-        if arg[1] == True:
-            pd.DataFrame(np_array).to_csv("path/to/file.csv")
+    run = True
+
+    while run:
+        try:
+            continue
+        except:
+            print('saving...\n')
+            pd.DataFrame(sig).to_csv("test.csv")
+            time.sleep(2)
+    else:
+        print('out of while')
+
+       
+
 
 if __name__ == '__main__':
     print('\nPress any key to start...')
@@ -126,7 +140,7 @@ if __name__ == '__main__':
     print('');
     print('================INPUT================')
     print('=Input fs: %0.1f'%SAMPLING_FREQUENCY)
-    print('=Send Tobii stim every X seconds: %0.2f'%(SAMPLING_FREQUENCY/DOWN_SAMP_RATIO))
+    print('=Send Tobii stim every X seconds: %0.2f'%(SAMPLING_FREQUENCY/STIM_PERIOD))
     print('=====================================\n')
     main()
     

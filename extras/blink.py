@@ -27,7 +27,6 @@ def main(PIN=13,N_STIMS = 3, ONTIME = 0.2,OFFTIME = 5 ):
     # start looking for arduino
     print('Looking for arduino...')
     BOOT = time.time()
-    run = True
     board = Arduino(port)
 
     # set initial output to low 
@@ -40,18 +39,16 @@ def main(PIN=13,N_STIMS = 3, ONTIME = 0.2,OFFTIME = 5 ):
     time.sleep(5)
 
     # sends stimuli and prints data while t < DURATION
-    while (COUNT <= N_STIMS ):
+    while (COUNT < N_STIMS ):
         UP = time.time()
         board.digital[PIN].write(1)
         time.sleep(ONTIME)
         board.digital[PIN].write(0)
         time.sleep(OFFTIME)
         RUNTIME = time.time() - STARTTIME
-        OUTPUT.append([(RUNTIME + DELAY),time.time() - UP - (ONTIME+OFFTIME)]) # real time sent, real delay
-        COUNT += 1
-        print('Stim # %0.1f sent at: %0.6f, Pulse delay(s): %0.6f'%(COUNT,RUNTIME + DELAY,(time.time() - UP - (ONTIME+OFFTIME))))
+        OUTPUT.append([RUNTIME,time.time() - UP - (ONTIME+OFFTIME)]) # real time sent, real delay
+        print('Stim # %0.1f sent at: %0.6f, Pulse delay(s): %0.6f'%(COUNT,RUNTIME,(time.time() - UP)))
     else:
-        run = False
         print('\nENDED..\n')
         print(np.asarray(OUTPUT))
         print('')
