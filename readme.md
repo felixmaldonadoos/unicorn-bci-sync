@@ -22,6 +22,9 @@ Recieves keyboard stimulus from ```OpenVibe``` software via ```TCP``` and forwar
 - ```TCP_IP = '' ```: Server IP address.
 - ```TCP_PORT = 5678```: Default ```TCP Writer``` Box port. Can be changed within ```OpenVibe```. 
 
+# keyboardstim.xlm
+```OpenVibe``` scenario. Press any assigned key to send stmiulus to Tobii eye-tracker. List can be found in ```resources/Stim_labels.png```. 
+
 # /testcodes
 - ```test_button_only.py```
 Blinks LED upon pressing button. 
