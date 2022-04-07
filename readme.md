@@ -7,7 +7,6 @@ Recieves keyboard stimulus from ```OpenVibe``` software via ```TCP``` and forwar
 - ```TCP_PORT = 5678```: Default ```TCP Writer``` Box port. Can be changed within ```OpenVibe```. 
 
 
-
 # /testcodes
 - ```test_button_only.py```
 Blinks LED upon pressing button. 
