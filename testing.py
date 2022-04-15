@@ -5,7 +5,6 @@ from tcp_latency import measure_latency
 import RPi.GPIO as GPIO 
 import re
 import sys
-import ping
 
 class tcp2tobii():
 
@@ -94,19 +93,6 @@ class tcp2tobii():
         except:
             print("X")
 
-    def run(self):
-        createsocket() 
-        createfile()
-        connectport()
-
-        try:
-            main()
-        except KeyboardInterrupt:
-            print("\nForced Interrupt.")
-            sys.exit(1)
-        except:
-            print("Unknown error!")
-            sys.exit(1)
 
     def main():
 
@@ -143,7 +129,19 @@ class tcp2tobii():
                     savefile()
                 else:
                     pass
-  
-if __name__ == "__main__":
+
+def runme():
     run = tcp2tobii()
-    run.run()
+    run.createsocket() 
+    run.createfile()
+    run.connectport()
+    try:
+        run.main()
+    except KeyboardInterrupt:
+        print("\nForced Interrupt.")
+        sys.exit(1)
+    except:
+        print("Unknown error!")
+        sys.exit(1)
+if __name__ == "__main__":
+    runme()
