@@ -24,8 +24,8 @@ class tcp2tobii():
 
         # file setup
         self.filename = "data/"+datetime.today().strftime('%Y-%m-%d %H:%M:%S') + ".csv" # file with today's datetime
-        self.filename = re.sub(r"\s",'_',filename) # sub any whitespace with underscore
-        self.filename = re.sub(r":",'-',filename) # HH:MM:SS in .csv name causes github fetch request error
+        self.filename = re.sub(r"\s",'_',self.filename) # sub any whitespace with underscore
+        self.filename = re.sub(r":",'-',self.filename) # HH:MM:SS in .csv name causes github fetch request error
 
         # Print introduction and common info. 
         print("\nStarting 'unicorn-bci-sync'")
