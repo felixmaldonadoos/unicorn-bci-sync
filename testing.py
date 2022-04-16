@@ -102,6 +102,7 @@ class tcp2tobii():
             print("X")
 
     def is_still_connected(self):
+        # not yet implemented
         try:
             self.s.sendall(b"ping")
             return True
@@ -142,14 +143,6 @@ class tcp2tobii():
                     pass
         
 
-def checkifconnected(self):
-    try:
-		self.s.sendall(b"ping")
-        print("still connected")
-	except:
-    	return False
-        sys.exi(1)
-    
 
 def main():
     run = tcp2tobii()
