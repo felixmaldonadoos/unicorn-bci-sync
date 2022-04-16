@@ -33,6 +33,10 @@ class tcp2tobii():
         print(f"PORT to connect: {self.TCP_PORT}")
         print(f"Tobii Pin to connect: {self.PIN_LED}")
 
+        # simple counters
+        self.COUNT = 0
+        self.STIMCOUNT = 0
+
     def createfile(self):
         # filename = string
         print("Creating csv...",end="")
@@ -92,12 +96,14 @@ class tcp2tobii():
             print("X")
 
 
-    def main(self):
-
-        # counters
+    def listen(self):
+        # board setup
+        # GPIO setup
+        GPIO.setmode(GPIO.BCM)
+        GPIO.setwarnings(False)
+        GPIO.setup(self.PIN_LED,GPIO.OUT)
+        # timers
         STARTTIME = time.time()
-        count = 0
-        STIMCOUNT = 0
 
         print("\nCOUNT, ELAPSED TIME (ms), DELAY TIME (ms):\n")
 
@@ -108,13 +114,12 @@ class tcp2tobii():
             
             if (data):
                 ACQUIRETIME = time.time()
-                self.count += 1
+                self.COUNT += 1
                 # Openvibe sends 2 stims, ignores when button is released. if odd (first) save 
-                if (self.count%2 == 1 ):
+                if (self.COUNT%2 == 1 ):
                     
                     # send stim
-                    sendstim()
-                    
+                    self.sendstim()
                     # get timestamp
                     self.ELAPSEDTIME = CURRENTTIME - STARTTIME
                     self.DELAYTIME = (ACQUIRETIME - CURRENTTIME) # not true "delay", time from previous press
@@ -124,20 +129,20 @@ class tcp2tobii():
                     print(str(self.STIMCOUNT-1).zfill(2) + f"| {round(self.ELAPSEDTIME,6)} | {round(self.DELAYTIME,6)} ",end = "" ) # dont print new line
 
                     # save timestamp to file
-                    savefile()
+                    self.savefile()
                 else:
                     pass
 
-def runme():
+def main():
     run = tcp2tobii()
     run.createsocket() 
     run.createfile()
     
     try:
-        run.main()
+        run.listen()
     except KeyboardInterrupt:
         print("\nForced Interrupt.")
         sys.exit(1)
     
 if __name__ == "__main__":
-    runme()
+    main()
