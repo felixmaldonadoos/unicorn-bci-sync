@@ -55,7 +55,7 @@ class tcp2tobii():
         # connect to port
         print("Trying to connect to port...",end="")
         try:
-            s.connect((self.TCP_IP, self.TCP_PORT))
+            self.s.connect((self.TCP_IP, self.TCP_PORT))
             print("OK.")
         except socket.gaierror as e:
             print(f"Address-related error connecting to server: {e}")
@@ -65,16 +65,12 @@ class tcp2tobii():
             sys.exit(1)
         print("OK.")
 
-        
-        
-
         # check connection latency measure_latency(host,port,runs,timeout)
         print("Verifying initial latency...",end="")
         try:
             latency = str(round(measure_latency(host=self.TCP_IP, port=self.TCP_PORT)[0],4))
         except IndexError:
             print("Seems IP or port were disconnected.")
-        
         print(latency)
 
     def sendstim(self):
@@ -87,7 +83,7 @@ class tcp2tobii():
 
     def savefile(self):
         try:
-            file = open(filename,"a")
+            file = open(self.filename,"a")
             file.write(str(self.STIMCOUNT) +","+ str(self.ELAPSEDTIME) + "," + str(self.DELAYTIME))
             file.write("\n")
             file.close()
@@ -108,7 +104,7 @@ class tcp2tobii():
         # Stim listener run forever until CTRL+C
         while True:
             CURRENTTIME = time.time()
-            data = s.recv(1024)
+            data = self.s.recv(1024)
             
             if (data):
                 ACQUIRETIME = time.time()
