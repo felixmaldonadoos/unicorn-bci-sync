@@ -101,14 +101,16 @@ class tcp2tobii():
         except:
             print("X")
 
+    def is_still_connected(self):
+        try:
+            self.s.sendall(b"ping")
+            return True
+        except:
+            return False
+
+
     def listen(self):
-
-
-        # # GPIO setup
-        # GPIO.setmode(GPIO.BCM)
-        # GPIO.setwarnings(False)
-        # GPIO.setup(self.PIN_LED,GPIO.OUT)
-        # timers
+        # timer
         STARTTIME = time.time()
 
         print("\nCOUNT, ELAPSED TIME (ms), DELAY TIME (ms):\n")
@@ -138,6 +140,16 @@ class tcp2tobii():
                     self.savefile()
                 else:
                     pass
+        
+
+def checkifconnected(self):
+    try:
+		self.s.sendall(b"ping")
+        print("still connected")
+	except:
+    	return False
+        sys.exi(1)
+    
 
 def main():
     run = tcp2tobii()
