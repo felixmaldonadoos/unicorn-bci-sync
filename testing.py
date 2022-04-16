@@ -18,10 +18,10 @@ class tcp2tobii():
         
         # initializing the list object
         self.TCP_IP = pattern_ip.search(fstring[0])[0] # find ip
-        self.TCP_PORT = re.findall('[0-9]+', fstring[1])[0] # find port num
-        self.PIN_LED = re.findall('[0-9]+', fstring[2])[0] # find led pin
+        self.TCP_PORT = int(re.findall('[0-9]+', fstring[1])[0]) # find port num
+        self.PIN_LED = int(re.findall('[0-9]+', fstring[2])[0]) # find led pin
 
-        # file setup
+        # # file setup
         self.filename = "data/"+datetime.today().strftime('%Y-%m-%d %H:%M:%S') + ".csv" # file with today's datetime
         self.filename = re.sub(r"\s",'_',self.filename) # sub any whitespace with underscore
         self.filename = re.sub(r":",'-',self.filename) # HH:MM:SS in .csv name causes github fetch request error
@@ -35,7 +35,6 @@ class tcp2tobii():
 
     def createfile(self):
         # filename = string
-        print(f"Creating file in path: {self.filename}")
         print("Creating csv...",end="")
         file = open(self.filename,"a")
         file.write("count,elapsed_time,delay_time" + "\n")
@@ -47,16 +46,16 @@ class tcp2tobii():
         # create socket
         print("Trying to create socket...",end="")
         try: 
-            s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             print("OK.")
         except socket.error as e:
             print(f"Error creating socket: {e}")
-
-    def connectport(self):
+            sys.exit(1)
+            
         # connect to port
         print("Trying to connect to port...",end="")
         try:
-            s.connect((TCP_IP, TCP_PORT))
+            s.connect((self.TCP_IP, self.TCP_PORT))
             print("OK.")
         except socket.gaierror as e:
             print(f"Address-related error connecting to server: {e}")
@@ -65,6 +64,9 @@ class tcp2tobii():
             print(f"Connection error: {e}")
             sys.exit(1)
         print("OK.")
+
+        
+        
 
         # check connection latency measure_latency(host,port,runs,timeout)
         print("Verifying initial latency...",end="")
@@ -94,7 +96,7 @@ class tcp2tobii():
             print("X")
 
 
-    def main():
+    def main(self):
 
         # counters
         STARTTIME = time.time()
@@ -134,14 +136,12 @@ def runme():
     run = tcp2tobii()
     run.createsocket() 
     run.createfile()
-    run.connectport()
+    
     try:
         run.main()
     except KeyboardInterrupt:
         print("\nForced Interrupt.")
         sys.exit(1)
-    except:
-        print("Unknown error!")
-        sys.exit(1)
+    
 if __name__ == "__main__":
     runme()
