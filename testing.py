@@ -95,13 +95,24 @@ class tcp2tobii():
         except:
             print("X")
 
-
-    def listen(self):
-        # board setup
+    def boardsetup(self):
         # GPIO setup
         GPIO.setmode(GPIO.BCM)
         GPIO.setwarnings(False)
         GPIO.setup(self.PIN_LED,GPIO.OUT)
+
+        return self.GPIO
+
+    def listen(self):
+
+"""
+this function is the listener. 
+"""
+
+        # # GPIO setup
+        # GPIO.setmode(GPIO.BCM)
+        # GPIO.setwarnings(False)
+        # GPIO.setup(self.PIN_LED,GPIO.OUT)
         # timers
         STARTTIME = time.time()
 
