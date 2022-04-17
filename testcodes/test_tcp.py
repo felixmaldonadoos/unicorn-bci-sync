@@ -1,24 +1,75 @@
 import socket
 import time
+import re
+import os
+import sys
+from tcp_latency import measure_latency
 
-# stimulus setup
-#CODE = 'OVTK_StimulationId_Label_00'
-#CODE_HEX = "4f56544b5f5374696d756c6174696f6e49645f4c6162656c5f3030"
-#CODE_HEX = hex(CODE)
-CODE_HEX = "0x584"
-CODE_BYTES = bytes.fromhex(CODE_HEX)
-print("code to send:\n")
-print(CODE_BYTES)
 
-# Server's IP and socket
-TCP_IP = '10.0.0.92'
-TCP_PORT = 15361
+class connecttest():
+    def __init__(self):
 
-# socket setup
-s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-s.connect((TCP_IP, TCP_PORT))
+        # read file to extract IP and connections
+        with open('testaddress.txt') as fh:
+            fstring = fh.readlines()
 
-while True:
-    print("connected.")
-    s.send(1412)
-    time.sleep(3)
+        # declaring the regex pattern for IP addresses
+        pattern_ip = re.compile(r'(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})')
+        
+        # initializing the list object
+        self.TCP_IP = pattern_ip.search(fstring[0])[0] # find ip
+        self.TCP_PORT = int(re.findall('[0-9]+', fstring[1])[0]) # find port num
+
+        print(f"IP: {self.TCP_IP}\nPORT: {self.TCP_PORT}")
+
+
+    def connect(self):
+
+        # create socket
+        print("Trying to create socket...",end="")
+        try: 
+            self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            print("OK.")
+        except socket.error as e:
+            print(f"Error:{e}")
+            sys.exit(1)
+            
+        # connect to port
+        print("Trying to connect to port...",end="")
+        try:
+            self.s.connect((self.TCP_IP, self.TCP_PORT))
+            print("OK.")
+        except socket.gaierror as e:
+            print(f"Address-related error connecting to server: {e}")
+        except socket.error as e:
+            print(f"Error: Connection Refused >> Check if TCP_HOST and if it host is running.")
+
+        self.s.close()
+
+    def latency(self,runs = 5):
+        # unstable, trying to not use numpy due to dependency issue on raspi
+    
+        try:
+            print("Calculating latency...",end = "")
+            LATENCY = round(measure_latency(host=self.TCP_IP, port=self.TCP_PORT)[0],4)
+            print(f"{LATENCY} ms") 
+        except:
+            print("Failed.")        
+    
+    def main(self):
+        self.connect()
+        self.latency()
+
+if __name__ == "__main__":
+
+    RUNS = 3
+    m = connecttest()
+    
+    for i in range(RUNS):
+        try:
+            print(f"\n==== TEST TCP CONNECTION RUN {i+1 } ====")
+            m.main()
+        except KeyboardInterrupt:
+            print("Keyboard interrupt.")
+            sys.exit(1)
+    print("Test connection completed.\n")
