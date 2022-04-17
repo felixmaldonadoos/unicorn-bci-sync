@@ -42,7 +42,6 @@ class tcp2tobii():
         GPIO.setwarnings(False)
         GPIO.setup(self.PIN_LED,GPIO.OUT)
 
-
     def createfile(self):
         # filename = string
         print("Creating csv...",end="")
@@ -73,7 +72,6 @@ class tcp2tobii():
         except socket.error as e:
             print(f"Connection error: {e}")
             sys.exit(1)
-        print("OK.")
 
         # check connection latency measure_latency(host,port,runs,timeout)
         print("Verifying initial latency...",end="")
@@ -109,7 +107,6 @@ class tcp2tobii():
         except:
             return False
 
-
     def listen(self):
         # timer
         STARTTIME = time.time()
@@ -142,8 +139,6 @@ class tcp2tobii():
                 else:
                     pass
         
-
-
 def main():
     run = tcp2tobii()
     run.createsocket() 
