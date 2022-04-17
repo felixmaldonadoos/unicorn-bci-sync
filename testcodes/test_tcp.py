@@ -42,7 +42,7 @@ class connecttest():
         except socket.gaierror as e:
             print(f"Address-related error connecting to server: {e}")
         except socket.error as e:
-            print(f"Error: Connection Refused >> Check if TCP_HOST and if it host is running.")
+            print(f"Error: Connection Refused >> Check TCP_HOST name and if it host is running.")
 
         self.s.close()
 
@@ -64,7 +64,7 @@ if __name__ == "__main__":
 
     RUNS = 3
     m = connecttest()
-    
+
     for i in range(RUNS):
         try:
             print(f"\n==== TEST TCP CONNECTION RUN {i+1 } ====")
