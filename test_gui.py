@@ -172,4 +172,4 @@ def app():
     ws.mainloop()
     
 if __name__ == "__main__":
-    main()
+    app()
