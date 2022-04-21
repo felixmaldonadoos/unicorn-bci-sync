@@ -1,20 +1,18 @@
 from testing import tcp2tobii
 from tkinter import *
+import sys
 
 def main():
-    global aborted; aboted = False
+    global aborted; 
+    aborted = False
     run = tcp2tobii()
     run.createsocket() 
     run.createfile()
-    while not aborted:
-        try:
-            run.listen()
-        except KeyboardInterrupt:
-            print("\nForced Interrupt.")
-
-def abort():
-    aborted = True
-    return aborted
+    try:
+        run.listen()
+    except KeyboardInterrupt:         
+        print("\nForced Interrupt.")
+          
 
 if __name__ == "__main__":
     root=Tk() 
@@ -22,7 +20,7 @@ if __name__ == "__main__":
     var1=StringVar()  
     b1=Button(root,text='press', command=main) 
     b1.pack() 
-    b2=Button(root,text='press2', command=abort) 
+    b2=Button(root,text='press2', command=root.destroy) 
     b2.pack() 
     l1=Label(root, textvariable=var1) 
     l1.pack() 
