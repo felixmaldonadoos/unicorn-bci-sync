@@ -17,7 +17,7 @@ class Application(object):
         command = self.start,bg='green')
         self.stopButton = tk.Button(self.top, height=4, width=20, text ="Stop Run", 
         command = self.stop,bg='yellow')
-        self.terminateButton = tk.Button(self.top, height=4, width=20, text ="Terminate Window", 
+        self.terminateButton = tk.Button(self.top, height=2, width=10, text ="Close", 
         command = self.terminateall,bg ='red')
         
         # set up buttons
@@ -50,4 +50,4 @@ class Application(object):
         self.top.destroy()
 
 if __name__ == "__main__":
-    a = Application(script = "main")
+    a = Application(script = "test")
