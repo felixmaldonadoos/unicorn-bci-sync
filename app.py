@@ -40,7 +40,10 @@ class Application():
         Popen(f"TASKKILL /F /PID {self.procc_id} /T")
         
     def terminateall(self):
-
+        """
+        Terminates whole program. Similar to force quit. You can also terminate program by 
+        terminating window itself (red X or circle, depends on OS)
+        """ 
         print("\nTerminating program..")
         sys.exit(1)
         self.top.destroy()
