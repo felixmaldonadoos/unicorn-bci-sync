@@ -60,7 +60,7 @@ class tcp2tobii():
             print("OK.")
         except socket.error as e:
             print(f"Error creating socket: {e}")
-            sys.exit(1)
+            return
             
         # connect to port
         print("Trying to connect to port...",end="")
@@ -69,10 +69,10 @@ class tcp2tobii():
             print("OK.")
         except socket.gaierror as e:
             print(f"Address-related error connecting to server: {e}")
-            sys.exit(1)
+            return
         except socket.error as e:
             print(f"Connection error: {e}")
-            sys.exit(1)
+            return
 
         # check connection latency measure_latency(host,port,runs,timeout)
         print("Verifying initial latency...",end="")
