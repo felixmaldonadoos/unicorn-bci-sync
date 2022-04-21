@@ -1,8 +1,8 @@
-
 from tkinter import *
 
 def write_a_slogan():
     print("COMMAND")
+    
 def app():
     ws = Tk()
     ws.title("Python Guides")
@@ -21,7 +21,6 @@ def app():
                     fg="red",
                     command=write_a_slogan)
     slog.pack(side=LEFT)
-
     ws.mainloop()
 
 if __name__ == "__main__":

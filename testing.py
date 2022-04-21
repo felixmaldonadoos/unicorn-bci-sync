@@ -138,7 +138,7 @@ class tcp2tobii():
                     self.savefile()
                 else:
                     pass
-        
+      
 def main():
     run = tcp2tobii()
     run.createsocket() 
