@@ -1,61 +1,83 @@
-import sys
-from PyQt5 import QtCore, QtWidgets
-from PyQt5.QtWidgets import QMainWindow, QLabel, QGridLayout, QWidget, QMenu
-from PyQt5.QtWidgets import QPushButton
-from PyQt5.QtCore import QSize, QTimer
 
-class Example(QMainWindow):
+# Python program to illustrate a stop watch
+# using Tkinter
+#importing the required libraries
+import tkinter as Tkinter
+from datetime import datetime
 
-    def __init__(self):
-        QMainWindow.__init__(self)
-
-        self.setMinimumSize(QSize(320, 200))    
-        self.setWindowTitle("PyQt button example - pythonprogramminglanguage.com") 
-
-        self.bt1 = QPushButton("Button 1",self)
-        self.bt2 = QPushButton("Button 2",self)
-        self.bt3 = QPushButton('Button 3',self)
-
-        self.bt1.move(50,50)
-        self.bt2.move(50,100)
-        self.bt3.move(170,100)
-        
-        menu = QMenu(self)
-        menu.addAction('Fruit')
-        menu.addSeparator()
-        menu.addAction('Cookies')
-        menu.addSeparator()
-        menu.addAction('Ice cream')
-        self.bt2.setMenu(menu)
-
-        self.bt1.clicked.connect(self.Button1)
-        self.count = 10
-        self.bt3.clicked.connect(self.Action)
-        self.time = QTimer(self)
-        self.time.setInterval(1000)
-        self.time.timeout.connect(self.Refresh)
-        self.show()
-
-    def Button1(self):
-        print('Clicked')
-        
-    def Action(self):
-        if self.bt3.isEnabled():
-            self.time.start()
-            self.bt3.setEnabled(False)
-
-    def Refresh(self):
-        if self.count > 0:
-            self.bt3.setText(str(self.count)+' seconds')
-            self.count -= 1
-        else:
-            self.time.stop()
-            self.bt3.setEnabled(True)
-            self.bt3.setText('Button 3')
-            self.count = 10
-
-if __name__ == "__main__":
-    app = QtWidgets.QApplication(sys.argv)
-    mainWin = Example()
-    mainWin.show()
-    sys.exit( app.exec_() )
+counter = 66600
+running = False
+def counter_label(label):
+    def count():
+        if running:
+            global counter
+   
+            # To manage the initial delay.
+            if counter==66600:            
+                display="Starting..."
+            else:
+                tt = datetime.fromtimestamp(counter)
+                string = tt.strftime("%H:%M:%S")
+                display=string
+   
+            label['text']=display   # Or label.config(text=display)
+   
+            # label.after(arg1, arg2) delays by 
+            # first argument given in milliseconds
+            # and then calls the function given as second argument.
+            # Generally like here we need to call the 
+            # function in which it is present repeatedly.
+            # Delays by 1000ms=1 seconds and call count again.
+            label.after(1000, count) 
+            counter += 1
+   
+    # Triggering the start of the counter.
+    count()     
+   
+# start function of the stopwatch
+def Start(label):
+    global running
+    running=True
+    counter_label(label)
+    start['state']='disabled'
+    stop['state']='normal'
+    reset['state']='normal'
+   
+# Stop function of the stopwatch
+def Stop():
+    global running
+    start['state']='normal'
+    stop['state']='disabled'
+    reset['state']='normal'
+    running = False
+   
+# Reset function of the stopwatch
+def Reset(label):
+    global counter
+    counter=0
+   
+    # If rest is pressed after pressing stop.
+    if running==False:      
+        reset['state']='disabled'
+        label['text']='Welcome!'
+   
+    # If reset is pressed while the stopwatch is running.
+    else:               
+        label['text']='Starting...'
+   
+root = Tkinter.Tk()
+root.title("Stopwatch")
+   
+# Fixing the window size.
+root.minsize(width=250, height=70)
+label = Tkinter.Label(root, text="Welcome!", fg="black", font="Verdana 30 bold")
+label.pack()
+f = Tkinter.Frame(root)
+start = Tkinter.Button(f, text='Start', width=6, command=lambda:Start(label))
+stop = Tkinter.Button(f, text='Stop',width=6,state='disabled', command=Stop)
+reset = Tkinter.Button(f, text='Reset',width=6, state='disabled', command=lambda:Reset(label))
+f.pack(anchor = 'center',pady=5)
+start.pack(side="left")
+stop.pack(side ="left")
+reset.pack(side="left")
+root.mainloop()

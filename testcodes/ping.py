@@ -2,7 +2,7 @@ import platform
 import socket
 import sys
 
-TCP_IP = '10.0.0.92' # dorado - personal
+TCP_IP = '127.0.0.1' # dorado - personal
 #TCP_IP = '144.118.56.78' # dragonfly-lab pc
 TCP_PORT = 5678 # default tcp writer box
 
