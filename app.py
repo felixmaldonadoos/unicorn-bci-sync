@@ -3,10 +3,11 @@ import tkinter as tk
 import sys
 from subprocess import Popen
 
-class Application():
-    def __init__(self):
+class Application(object):
+    def __init__(self,script):
         
         # set up window
+        self.script = script
         self.top = tk.Tk()
         self.top.title('Sync Hub')
         self.top.geometry('300x200') # Size 200, 200
@@ -29,7 +30,7 @@ class Application():
         """
         this functions starts a new process that runs our main script. 
         """ 
-        process = Popen(["python", "tcp2tobii.py"])
+        process = Popen(["python", f"{self.script}.py"])
         self.procc_id = process.pid
         return self.procc_id
         
@@ -49,4 +50,4 @@ class Application():
         self.top.destroy()
 
 if __name__ == "__main__":
-    a = Application()
+    a = Application(script = "main")
