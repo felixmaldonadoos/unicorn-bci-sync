@@ -30,15 +30,19 @@ class Application(object):
         """
         this functions starts a new process that runs our main script. 
         """ 
+        print(f"{self.script}.py with process number: ",end="")
         process = Popen(["python", f"{self.script}.py"])
         self.procc_id = process.pid
+        print(self.procc_id)
         return self.procc_id
         
     def stop(self):
         """
         this functions stops the process that was called.
         """ 
-        Popen(f"TASKKILL /F /PID {self.procc_id} /T")
+        # Popen(f"TASKKILL /F /PID {self.procc_id} /T") # windows
+        print(f"Killing process: {self.procc_id}")
+        Popen(["kill","-s","9",f"{self.procc_id}"])
         
     def terminateall(self):
         """
