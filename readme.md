@@ -14,15 +14,15 @@ To install requirements, run the following in your environment:
 pip install -r requirements.txt
 ```
 # main.py
-Recieves keyboard stimulus from ```OpenVibe``` software via ```TCP``` and forwards trigger to ```Tobii``` eye-tracker system. This code waits for keyboard input and saves external stimulus' information on ```Elapsed_time``` and ```count```. Timestamps can also be saved on OpenVibe directly if needed. 
+Recieves keyboard stimulus from ```OpenVibe``` software via ```TCP``` and forwards trigger to ```Tobii``` eye-tracker system. This code waits for keyboard input and saves external stimulus' information on ```count```,```elapsed_time```, and '''delay_time'''. Timestamps can also be saved on OpenVibe directly if needed. 
 
 - ```TCP_IP = '' ```: Server IP address. Default to ```localhost = 127.0.0.1```.
 - ```TCP_PORT = 5678```: Default ```TCP Writer``` Box port. Can be changed within OpenVibe. 
 
-How to run: 
-  - You can check host port on Windows by: ``` Settings>Network & internet > Wi-Fi > "your_network"``` and locate ```IPv4 address: x:x:x:x```
+How to run: (Has not been updated for app implementation)
+  - You can check host port on Windows by: ```Settings>Network & internet > Wi-Fi > "your_network"``` and locate ```IPv4 address: x:x:x:x```
   - To check if connected, run ```ping -c 1 host_port``` on RaspberryPi.
-      1. Tip: Use ```VNC Viewer``` to remotely connect and run scripts on RaspberryPi, removing need for monitor and peripherals. 
+      1. Tip: Use VNC Viewer or SSH to remotely connect and run scripts on RaspberryPi, removing need for monitor and peripherals. 
   - Change ```TCP_PORT = "127.0.0.1"``` and ```TCP_PORT = 5678``` to necessary values. 
   - Run ```main.py```. 
   - Send stimulus by pressing any stim label key (e.g. 'a') on host computer, RaspberryPi is listening and forwards to Tobii. Stim labels can be found at 'stim_labels.png'
