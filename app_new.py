@@ -64,12 +64,8 @@ class Application(object):
     run = tcp2tobii()
     run.createsocket() 
     run.createfile()
-    
-    try:
-        run.listen()
-    except KeyboardInterrupt:
-        print("\nForced Interrupt.")
-        sys.exit(1)
+    run.listen()
+   
 
 class tcp2tobii():
     def __init__(self):
