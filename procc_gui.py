@@ -11,12 +11,9 @@ class Application(object):
         self.top.title('Sync Hub')
         self.top.geometry('300x200') # Size 200, 200
         
-        # set up processes
-        self.p1 = Process(target = self.start)
-
         # declare buttons and target functions
         self.startButton = tk.Button(self.top, height=4, width=20, text ="Start Run", 
-        command = self.p1.start,bg='green')
+        command = self.start,bg='green')
         self.stopButton = tk.Button(self.top, height=4, width=20, text ="Stop Run", 
         command = self.stop,bg='yellow')
         self.terminateButton = tk.Button(self.top, height=2, width=10, text ="Close", 
@@ -32,16 +29,22 @@ class Application(object):
         """
         connect() starts tcp2tobii connection
         """
-        connect()
+        self.process = Process(target = connect)
+        self.process.start()
 
-  
+    def connect(self):
+        """
+        connect tcp2tobii
+        """
+        tcp2tobii.connect()
+
     def stop(self):
         """
         this functions stops the process that was called.
         """ 
         # Popen(f"TASKKILL /F /PID {self.procc_id} /T") # windows
         print(f"Killing process")
-        self.p1.kill()
+        self.process.kill()
         
     def terminateall(self):
         """
