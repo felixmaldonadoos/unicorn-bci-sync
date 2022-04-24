@@ -2,6 +2,7 @@ import threading
 import time
 from multiprocessing import Process
 import threading
+import re
 import tkinter as tk
 import sys
 
@@ -167,7 +168,7 @@ class Application(object):
         print("inside the stop function. ")
         self.p.kill()
   
-    def connect():
+    def connect(self):
         self.createsocket() 
         self.createfile()
         try:
