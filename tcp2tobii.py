@@ -99,14 +99,6 @@ class tcp2tobii():
         except:
             print("X")
 
-    def is_still_connected(self):
-        # not yet implemented
-        try:
-            self.s.sendall(b"ping")
-            return True
-        except:
-            return False
-
     def listen(self):
         # timer
         STARTTIME = time.time()
@@ -139,16 +131,13 @@ class tcp2tobii():
                 else:
                     pass
       
-def main():
-    run = tcp2tobii()
-    run.createsocket() 
-    run.createfile()
-    
-    try:
-        run.listen()
-    except KeyboardInterrupt:
-        print("\nForced Interrupt.")
-        sys.exit(1)
-    
-if __name__ == "__main__":
-    main()
+    def main(self):
+        self.tcp2tobii()
+        self.createsocket() 
+        self.createfile()
+        
+        try:
+            self.listen()
+        except KeyboardInterrupt:
+            print("\nForced Interrupt.")
+            sys.exit(1)
