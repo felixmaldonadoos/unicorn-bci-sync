@@ -4,6 +4,8 @@ import re
 import tkinter as tk
 import sys
 import socket
+from tcp_latency import measure_latency
+import RPi.GPIO as GPIO 
 
   
 class Application(object):
@@ -12,7 +14,7 @@ class Application(object):
         # set up window
         self.root = tk.Tk()
         self.root.title('Sync Hub')
-        self.root.geometry('300x400') # Size 200, 200
+        self.root.geometry('250x300') # Size
         
         # create a label 
         
