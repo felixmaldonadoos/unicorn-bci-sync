@@ -10,6 +10,18 @@ import RPi.GPIO as GPIO
   
 class Application(object):
     def __init__(self):
+
+        # read file to extract IP and connections
+        with open('address.txt') as fh:
+            fstring = fh.readlines()
+
+        # declaring the regex pattern for IP addresses
+        pattern_ip = re.compile(r'(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})')
+        
+        # initializing the list object
+        self.TCP_IP = pattern_ip.search(fstring[0])[0] # find ip
+        self.TCP_PORT = int(re.findall('[0-9]+', fstring[1])[0]) # find port num
+        self.PIN_LED = int(re.findall('[0-9]+', fstring[2])[0]) # find led pin
         
         # set up window
         self.root = tk.Tk()
@@ -37,17 +49,6 @@ class Application(object):
         self.terminateButton.pack(pady=10)
         self.root.mainloop()
 
-        # read file to extract IP and connections
-        with open('address.txt') as fh:
-            fstring = fh.readlines()
-
-        # declaring the regex pattern for IP addresses
-        pattern_ip = re.compile(r'(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})')
-        
-        # initializing the list object
-        self.TCP_IP = pattern_ip.search(fstring[0])[0] # find ip
-        self.TCP_PORT = int(re.findall('[0-9]+', fstring[1])[0]) # find port num
-        self.PIN_LED = int(re.findall('[0-9]+', fstring[2])[0]) # find led pin
 
         # # file setup
         self.filename = "data/"+ datetime.today().strftime('%Y-%m-%d %H:%M:%S') + ".csv" # file with today's datetime
