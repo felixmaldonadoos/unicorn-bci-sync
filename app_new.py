@@ -60,7 +60,7 @@ class Application(object):
         sys.exit(1)
         self.top.destroy()
 
-    def start():
+    def start(self):
         run = tcp2tobii()
         run.createsocket() 
         run.createfile()
