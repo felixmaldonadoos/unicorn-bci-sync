@@ -131,13 +131,14 @@ class tcp2tobii():
                 else:
                     pass
       
-    def run(self):
-        
-        createsocket() 
-        createfile()
-        
-        try:
-            listen()
-        except KeyboardInterrupt:
-            print("\nForced Interrupt.")
-            sys.exit(1)
+def connect():
+    run = tcp2tobii()
+    run.createsocket() 
+    run.createfile()
+    
+    try:
+        run.listen()
+    except KeyboardInterrupt:
+        print("\nForced Interrupt.")
+        sys.exit(1)
+    

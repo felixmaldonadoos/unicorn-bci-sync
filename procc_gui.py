@@ -3,7 +3,7 @@ from tkinter import *
 from tcp2tobii import *
   
 def f1():
-    tcp2tobii.run()
+    connect()
   
 def f2():
     print(2)
