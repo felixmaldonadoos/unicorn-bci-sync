@@ -1,6 +1,6 @@
 from multiprocessing import Process
 from tkinter import *
-import tcp2tobii
+from tcp2tobii import *
   
 def f1():
     tcp2tobii.run()
