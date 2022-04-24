@@ -1,5 +1,6 @@
 from multiprocessing import Process
 import tkinter as tk
+import sys
 from tcp2tobii import *
   
 class Application(object):
