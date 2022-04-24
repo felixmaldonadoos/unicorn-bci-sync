@@ -31,7 +31,7 @@ class Application(object):
         """
         self.process = Process(target = connect)
         self.process.start()
-
+        
     def connect(self):
         """
         connect tcp2tobii
@@ -52,8 +52,8 @@ class Application(object):
         terminating window itself (red X or circle, depends on OS)
         """ 
         print("\nTerminating program..")
-        sys.exit(1)
         self.top.destroy()
+        sys.exit(1)
 
 
 
