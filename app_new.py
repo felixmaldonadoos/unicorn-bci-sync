@@ -1,82 +1,51 @@
+import threading
 import time
+from multiprocessing import Process
+import threading
 import tkinter as tk
 import sys
-from subprocess import Popen
-import socket
-import time
-from datetime import datetime
-from tcp_latency import measure_latency
-import RPi.GPIO as GPIO 
-import re
-import sys
 
-
+  
 class Application(object):
     def __init__(self):
         
         # set up window
-        self.top = tk.Tk()
-        self.top.title('Sync Hub')
-        self.top.geometry('300x200') # Size 200, 200
+        self.root = tk.Tk()
+        self.root.title('Sync Hub')
+        self.root.geometry('300x400') # Size 200, 200
+        
+        # create a label 
         
         # declare buttons and target functions
-        self.startButton = tk.Button(self.top, height=4, width=20, text ="Start Run", 
-        command = self.start,bg='green')
-        self.stopButton = tk.Button(self.top, height=4, width=20, text ="Stop Run", 
-        command = self.stop,bg='yellow')
-        self.terminateButton = tk.Button(self.top, height=2, width=10, text ="Close", 
-        command = self.terminateall,bg ='red')
-        
-        # set up buttons
-        self.startButton.pack()
-        self.stopButton.pack()
-        self.terminateButton.pack()
-        self.top.mainloop()
-    
-    def temp_startog(self):
-        """
-        this functions starts a new process that runs our main script. 
-        """ 
-        print(f"{self.script}.py with process number: ",end="")
-        process = Popen(["python", f"{self.script}.py"])
-        self.procc_id = process.pid
-        print(self.procc_id)
-        return self.procc_id
-        
-    def stop(self):
-        """
-        this functions stops the process that was called.
-        """ 
-        # Popen(f"TASKKILL /F /PID {self.procc_id} /T") # windows
-        print(f"Killing process: {self.procc_id}")
-        Popen(["kill","-s","9",f"{self.procc_id}"])
-        
-    def terminateall(self):
-        """
-        Terminates whole program. Similar to force quit. You can also terminate program by 
-        terminating window itself (red X or circle, depends on OS)
-        """ 
-        print("\nTerminating program..")
-        sys.exit(1)
-        self.top.destroy()
+        self.labelIntro = tk.Label(self.root,text = "hello there!")
 
-    def start(self):
-        run = tcp2tobii()
-        run.createsocket() 
-        run.createfile()
-        run.listen()
-   
+        self.startButton = tk.Button(self.root, height=4, width=20, text ="Start Run", 
+        command = self.connect,bg='green')
 
-class tcp2tobii():
-    def __init__(self):
+        self.stopButton = tk.Button(self.root, height=4, width=20, text ="Sroot Run", 
+        command = self.close,bg='yellow')
+
+        self.terminateButton = tk.Button(self.root, height=2, width=10, text ="Close", 
+        command = self.closewindow,bg ='red')
+        
+        # set up buttons 
+        self.labelIntro.pack(pady = 10) 
+        self.startButton.pack(pady=10)
+        self.stopButton.pack(pady=10)
+        self.terminateButton.pack(pady=10)
+        self.root.mainloop()
+
+        # read file to extract IP and connections
+        with open('address.txt') as fh:
+            fstring = fh.readlines()
 
         # declaring the regex pattern for IP addresses
         pattern_ip = re.compile(r'(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})')
         
         # initializing the list object
-        self.TCP_IP = "10.0.0.92" # find ip
-        self.TCP_PORT = 5678 # find port num
-        self.PIN_LED = 18 # find led pin
+        self.TCP_IP = pattern_ip.search(fstring[0])[0] # find ip
+        self.TCP_PORT = int(re.findall('[0-9]+', fstring[1])[0]) # find port num
+        self.PIN_LED = int(re.findall('[0-9]+', fstring[2])[0]) # find led pin
 
         # # file setup
         self.filename = "data/"+datetime.today().strftime('%Y-%m-%d %H:%M:%S') + ".csv" # file with today's datetime
@@ -111,15 +80,32 @@ class tcp2tobii():
 
         # create socket
         print("Trying to create socket...",end="")
-        self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        try: 
+            self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            print("OK.")
+        except socket.error as e:
+            print(f"Error creating socket: {e}")
+            sys.exit(1)
             
         # connect to port
         print("Trying to connect to port...",end="")
-        self.s.connect((self.TCP_IP, self.TCP_PORT))
+        try:
+            self.s.connect((self.TCP_IP, self.TCP_PORT))
+            print("OK.")
+        except socket.gaierror as e:
+            print(f"Address-related error connecting to server: {e}")
+            sys.exit(1)
+        except socket.error as e:
+            print(f"Connection error: {e}")
+            sys.exit(1)
 
         # check connection latency measure_latency(host,port,runs,timeout)
         print("Verifying initial latency...",end="")
-        print(str(round(measure_latency(host=self.TCP_IP, port=self.TCP_PORT)[0],4)))
+        try:
+            latency = str(round(measure_latency(host=self.TCP_IP, port=self.TCP_PORT)[0],4))
+        except IndexError:
+            print("Seems IP or port were disconnected.")
+        print(latency)
 
     def sendstim(self):
         # uncomment prints for visualization
@@ -130,11 +116,14 @@ class tcp2tobii():
         GPIO.output(self.PIN_LED,GPIO.LOW)
 
     def savefile(self):
-        file = open(self.filename,"a")
-        file.write(str(self.STIMCOUNT) +","+ str(self.ELAPSEDTIME) + "," + str(self.DELAYTIME))
-        file.write("\n")
-        file.close()
-
+        try:
+            file = open(self.filename,"a")
+            file.write(str(self.STIMCOUNT) +","+ str(self.ELAPSEDTIME) + "," + str(self.DELAYTIME))
+            file.write("\n")
+            file.close()
+            print("Y")
+        except:
+            print("X")
 
     def listen(self):
         # timer
@@ -167,6 +156,32 @@ class tcp2tobii():
                     self.savefile()
                 else:
                     pass
-      
+    
+    def close(self):
+        self.s.close()
+        
+    def startProcess(self):
+        self.p = Process(target = self.main).start()
+    
+    def stopProcess(self):
+        print("inside the stop function. ")
+        self.p.kill()
+  
+    def connect():
+        self.createsocket() 
+        self.createfile()
+        try:
+            self.listen()
+        except KeyboardInterrupt:
+            print("\nForced Interrupt.")
+            self.root.destroy()
+
+    def closewindow(self):
+        """
+        Terminates whole program. Similar to force quit. You can also terminate program by 
+        terminating window itself (red X or circle, depends on OS)
+        """ 
+        self.root.destroy()
+        
 if __name__ == "__main__":
-    Application()
+    a = Application()
