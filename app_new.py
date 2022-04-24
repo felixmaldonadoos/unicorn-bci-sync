@@ -1,5 +1,5 @@
 import time
-import datetime
+from datetime import datetime
 import re
 import tkinter as tk
 import sys
