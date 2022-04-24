@@ -48,7 +48,7 @@ class Application(object):
         self.PIN_LED = int(re.findall('[0-9]+', fstring[2])[0]) # find led pin
 
         # # file setup
-        self.filename = "data/"+datetime.today().strftime('%Y-%m-%d %H:%M:%S') + ".csv" # file with today's datetime
+        self.filename = "data/"+ datetime.today().strftime('%Y-%m-%d %H:%M:%S') + ".csv" # file with today's datetime
         self.filename = re.sub(r"\s",'_',self.filename) # sub any whitespace with underscore
         self.filename = re.sub(r":",'-',self.filename) # HH:MM:SS in .csv name causes github fetch request error
 
