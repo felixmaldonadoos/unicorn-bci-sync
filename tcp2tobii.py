@@ -131,7 +131,7 @@ class tcp2tobii():
                 else:
                     pass
       
-    def main(self):
+    def run(self):
         self.tcp2tobii()
         self.createsocket() 
         self.createfile()
