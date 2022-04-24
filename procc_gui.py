@@ -12,7 +12,7 @@ class Application(object):
         self.top.geometry('300x200') # Size 200, 200
         
         # set up processes
-        self.p1 = Process(target = start)
+        self.p1 = Process(target = self.start)
 
         # declare buttons and target functions
         self.startButton = tk.Button(self.top, height=4, width=20, text ="Start Run", 
