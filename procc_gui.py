@@ -23,7 +23,6 @@ class Application(object):
         self.terminateButton = tk.Button(self.top, height=2, width=10, text ="Close", 
         command = self.terminateall,bg ='red')
         
-
         # set up buttons
         self.startButton.pack()
         self.stopButton.pack()
