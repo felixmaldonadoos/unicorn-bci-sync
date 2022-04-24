@@ -61,10 +61,10 @@ class Application(object):
         self.top.destroy()
 
     def start():
-    run = tcp2tobii()
-    run.createsocket() 
-    run.createfile()
-    run.listen()
+        run = tcp2tobii()
+        run.createsocket() 
+        run.createfile()
+        run.listen()
    
 
 class tcp2tobii():
