@@ -13,7 +13,6 @@ class Application(object):
         
         # set up processes
         self.p1 = Process(target = connect)
-        self.p2 = Process(target = stop)
 
         # declare buttons and target functions
         self.startButton = tk.Button(self.top, height=4, width=20, text ="Start Run", 
