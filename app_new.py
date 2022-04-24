@@ -1,10 +1,9 @@
-import threading
 import time
-from multiprocessing import Process
-import threading
+from time import datetime
 import re
 import tkinter as tk
 import sys
+import socket
 
   
 class Application(object):
