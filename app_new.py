@@ -61,9 +61,9 @@ class Application(object):
         self.top.destroy()
 
     def start():
-    run = tcp2tobii()
-    run.createsocket() 
-    run.createfile()
+        run = tcp2tobii()
+        run.createsocket() 
+        run.createfile()
     
     try:
         run.listen()
