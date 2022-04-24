@@ -3,10 +3,9 @@ from tkinter import *
 from tcp2tobii import *
   
 class Application(object):
-    def __init__(self,script):
+    def __init__(self):
         
         # set up window
-        self.script = script
         self.top = tk.Tk()
         self.top.title('Sync Hub')
         self.top.geometry('300x200') # Size 200, 200
