@@ -45,7 +45,7 @@ class Application(object):
         pattern_ip = re.compile(r'(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})')
         
         # initializing the list object
-        self.TCP_IP = pattern_ip.search(fstring[0])[0] # find ip
+        self.TCP_IP = pattern_ip.search(fstring[0])[0]) # find ip
         self.TCP_PORT = int(re.findall('[0-9]+', fstring[1])[0]) # find port num
         self.PIN_LED = int(re.findall('[0-9]+', fstring[2])[0]) # find led pin
 
