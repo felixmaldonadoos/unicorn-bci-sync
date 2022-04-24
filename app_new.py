@@ -61,9 +61,9 @@ class Application(object):
         self.top.destroy()
 
     def start():
-        run = tcp2tobii()
-        run.createsocket() 
-        run.createfile()
+    run = tcp2tobii()
+    run.createsocket() 
+    run.createfile()
     
     try:
         run.listen()
@@ -72,19 +72,15 @@ class Application(object):
         sys.exit(1)
 
 class tcp2tobii():
-
     def __init__(self):
-        # read file to extract IP and connections
-        with open('address.txt') as fh:
-            fstring = fh.readlines()
 
         # declaring the regex pattern for IP addresses
         pattern_ip = re.compile(r'(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})')
         
         # initializing the list object
-        self.TCP_IP = pattern_ip.search(fstring[0])[0] # find ip
-        self.TCP_PORT = int(re.findall('[0-9]+', fstring[1])[0]) # find port num
-        self.PIN_LED = int(re.findall('[0-9]+', fstring[2])[0]) # find led pin
+        self.TCP_IP = "10.0.0.92" # find ip
+        self.TCP_PORT = 5678 # find port num
+        self.PIN_LED = 18 # find led pin
 
         # # file setup
         self.filename = "data/"+datetime.today().strftime('%Y-%m-%d %H:%M:%S') + ".csv" # file with today's datetime
@@ -119,32 +115,15 @@ class tcp2tobii():
 
         # create socket
         print("Trying to create socket...",end="")
-        try: 
-            self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            print("OK.")
-        except socket.error as e:
-            print(f"Error creating socket: {e}")
-            sys.exit(1)
+        self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             
         # connect to port
         print("Trying to connect to port...",end="")
-        try:
-            self.s.connect((self.TCP_IP, self.TCP_PORT))
-            print("OK.")
-        except socket.gaierror as e:
-            print(f"Address-related error connecting to server: {e}")
-            sys.exit(1)
-        except socket.error as e:
-            print(f"Connection error: {e}")
-            sys.exit(1)
+        self.s.connect((self.TCP_IP, self.TCP_PORT))
 
         # check connection latency measure_latency(host,port,runs,timeout)
         print("Verifying initial latency...",end="")
-        try:
-            latency = str(round(measure_latency(host=self.TCP_IP, port=self.TCP_PORT)[0],4))
-        except IndexError:
-            print("Seems IP or port were disconnected.")
-        print(latency)
+        print(str(round(measure_latency(host=self.TCP_IP, port=self.TCP_PORT)[0],4)))
 
     def sendstim(self):
         # uncomment prints for visualization
@@ -155,22 +134,11 @@ class tcp2tobii():
         GPIO.output(self.PIN_LED,GPIO.LOW)
 
     def savefile(self):
-        try:
-            file = open(self.filename,"a")
-            file.write(str(self.STIMCOUNT) +","+ str(self.ELAPSEDTIME) + "," + str(self.DELAYTIME))
-            file.write("\n")
-            file.close()
-            print("Y")
-        except:
-            print("X")
+        file = open(self.filename,"a")
+        file.write(str(self.STIMCOUNT) +","+ str(self.ELAPSEDTIME) + "," + str(self.DELAYTIME))
+        file.write("\n")
+        file.close()
 
-    def is_still_connected(self):
-        # not yet implemented
-        try:
-            self.s.sendall(b"ping")
-            return True
-        except:
-            return False
 
     def listen(self):
         # timer
@@ -204,7 +172,5 @@ class tcp2tobii():
                 else:
                     pass
       
-
-    
 if __name__ == "__main__":
     Application()
