@@ -28,16 +28,15 @@ class Application(object):
         self.root.title('Sync Hub')
         self.root.geometry('250x300') # Size
         
-        # create a label 
         
         # declare buttons and target functions
         self.labelIntro = tk.Label(self.root,text = "hello there!")
 
         self.startButton = tk.Button(self.root, height=4, width=20, text ="Start Run", 
-        command = self.connect,bg='green')
+        command = threading.Thread(target=self.connect).start(),bg='green')
 
         self.stopButton = tk.Button(self.root, height=4, width=20, text ="Sroot Run", 
-        command = self.close,bg='yellow')
+        command = threading.Thread(target=self.close).start(),bg='yellow')
 
         self.terminateButton = tk.Button(self.root, height=2, width=10, text ="Close", 
         command = self.closewindow,bg ='red')
@@ -162,14 +161,7 @@ class Application(object):
     
     def close(self):
         self.s.close()
-        
-    def startProcess(self):
-        self.p = Process(target = self.main).start()
-    
-    def stopProcess(self):
-        print("inside the stop function. ")
-        self.p.kill()
-  
+
     def connect(self):
         self.createsocket() 
         self.createfile()
