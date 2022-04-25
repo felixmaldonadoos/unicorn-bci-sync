@@ -178,6 +178,7 @@ class Application(object):
         terminating window itself (red X or circle, depends on OS)
         """ 
         self.root.destroy()
+        sys.exit(1)
         
 if __name__ == "__main__":
     a = Application()
