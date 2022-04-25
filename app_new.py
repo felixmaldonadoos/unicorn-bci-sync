@@ -4,6 +4,7 @@ import re
 import tkinter as tk
 import sys
 import socket
+import threading
 from tcp_latency import measure_latency
 import RPi.GPIO as GPIO 
 
