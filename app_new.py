@@ -34,7 +34,7 @@ class Application(object):
         self.labelIntro = tk.Label(self.root,text = "hello there!")
 
         self.startButton = tk.Button(self.root, height=4, width=20, text ="Start Run", 
-        command = threadstart,bg='green')
+        command = self.threadstart,bg='green')
 
         self.stopButton = tk.Button(self.root, height=4, width=20, text ="Sroot Run", 
         command = threading.Thread(target=self.close),bg='yellow')
