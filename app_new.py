@@ -71,10 +71,15 @@ class Application():
         print("OK.")
 
     def threadstart(self):
-        self.thread = threading.Thread(target = self.connect).start()
+        self.startthread = threading.Thread(target = self.connect).start()
+        self.startthread.join()
 
     def threadclose(self):
-        self.threadclose = threading.Thread(target =self.close).start()
+        self.closethread = threading.Thread(target =self.close).start()
+        self.closethread.join()
+
+    def threadterminate(self):
+
 
     def createsocket(self):
 
@@ -214,7 +219,6 @@ class Application():
         Terminates whole program. Similar to force quit. You can also terminate program by 
         terminating window itself (red X or circle, depends on OS)
         """ 
-        sys.exit(1)
         self.root.destroy()
         
 if __name__ == "__main__":
