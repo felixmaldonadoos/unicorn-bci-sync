@@ -79,7 +79,7 @@ class Application():
         self.closethread.join()
 
     def threadterminate(self):
-
+        self.threadterminate = threading.Thread(target = self.terminate).start()
 
     def createsocket(self):
 
