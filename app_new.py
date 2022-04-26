@@ -37,7 +37,7 @@ class Application():
         command = self.threadstart,bg='green')
 
         self.stopButton = tk.Button(self.root, height=4, width=20, text ="Sroot Run", 
-        command = threading.Thread(target=self.close),bg='yellow')
+        command = threading.Thread(target=self.close).start(),bg='yellow')
 
         self.terminateButton = tk.Button(self.root, height=2, width=10, text ="Close", 
         command = self.closewindow,bg ='red')
@@ -164,7 +164,7 @@ class Application():
         GPIO.setmode(GPIO.BCM)
         GPIO.setwarnings(False)
         GPIO.setup(self.PIN_LED,GPIO.OUT)
-        
+
         # functions
         self.createsocket() 
         self.createfile()
@@ -211,8 +211,8 @@ class Application():
         Terminates whole program. Similar to force quit. You can also terminate program by 
         terminating window itself (red X or circle, depends on OS)
         """ 
-        self.root.destroy()
         sys.exit(1)
+        self.root.destroy()
         
 if __name__ == "__main__":
     a = Application()
