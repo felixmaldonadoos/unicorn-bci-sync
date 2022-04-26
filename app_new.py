@@ -5,6 +5,7 @@ import tkinter as tk
 import sys
 import socket
 import threading
+from multiprocessing import Process
 from tcp_latency import measure_latency
 import RPi.GPIO as GPIO 
 
@@ -28,8 +29,7 @@ class Application(object):
         self.root = tk.Tk()
         self.root.title('Sync Hub')
         self.root.geometry('250x300') # Size
-        
-        
+
         # declare buttons and target functions
         self.labelIntro = tk.Label(self.root,text = "hello there!")
 
@@ -41,7 +41,8 @@ class Application(object):
 
         self.terminateButton = tk.Button(self.root, height=2, width=10, text ="Close", 
         command = self.closewindow,bg ='red')
-        
+
+
         # set up buttons 
         self.labelIntro.pack(pady = 10) 
         self.startButton.pack(pady=10)
@@ -49,11 +50,12 @@ class Application(object):
         self.terminateButton.pack(pady=10)
         self.root.mainloop()
 
-
         # # file setup
-        self.filename = "data/"+ datetime.today().strftime('%Y-%m-%d %H:%M:%S') + ".csv" # file with today's datetime
-        self.filename = re.sub(r"\s",'_',self.filename) # sub any whitespace with underscore
-        self.filename = re.sub(r":",'-',self.filename) # HH:MM:SS in .csv name causes github fetch request error
+        filename = "data/"+ datetime.today().strftime('%Y-%m-%d %H:%M:%S') + ".csv" # file with today's datetime
+        filename = re.sub(r"\s",'_',filename) # sub any whitespace with underscore
+        filename = re.sub(r":",'-',filename) # HH:MM:SS in .csv name causes github fetch request error
+
+        self.filename = filename
 
         # Print introduction and common info. 
         print("\nStarting 'unicorn-bci-sync'")
@@ -161,6 +163,7 @@ class Application(object):
                     pass
     
     def close(self):
+        print("Closing socket.")
         self.s.close()
 
     def connect(self):
