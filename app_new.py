@@ -37,7 +37,7 @@ class Application():
         command = self.threadstart,bg='green')
 
         self.stopButton = tk.Button(self.root, height=4, width=20, text ="Sroot Run", 
-        command = threading.Thread(target=self.close).start(),bg='yellow')
+        command = target=self.threadclose,bg='yellow')
 
         self.terminateButton = tk.Button(self.root, height=2, width=10, text ="Close", 
         command = self.closewindow,bg ='red')
@@ -72,6 +72,9 @@ class Application():
 
     def threadstart(self):
         self.thread = threading.Thread(target = self.connect).start()
+
+    def threadclose(self):
+        self.threadclose = threading.Thread(target =self.close).start()
 
     def createsocket(self):
 
