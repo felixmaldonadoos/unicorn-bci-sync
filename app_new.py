@@ -137,7 +137,7 @@ class Application(object):
         # Stim listener run forever until CTRL+C
         while True:
             CURRENTTIME = time.time()
-            data = self.s.recv(1024)
+            data = s.recv(1024)
             
             if (data):
                 ACQUIRETIME = time.time()
