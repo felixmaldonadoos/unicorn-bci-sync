@@ -49,12 +49,6 @@ class Application(object):
         self.stopButton.pack(pady=10)
         self.terminateButton.pack(pady=10)
         self.root.mainloop()
-
-        # # file setup
-        self.filename = "data/"+ datetime.today().strftime('%Y-%m-%d %H:%M:%S') + ".csv" # file with today's datetime
-        self.filename = re.sub(r"\s",'_',self.filename) # sub any whitespace with underscore
-        self.filename = str(re.sub(r":",'-',self.filename)) # HH:MM:SS in .csv name causes github fetch request error
-
         
 
         # Print introduction and common info. 
@@ -75,6 +69,10 @@ class Application(object):
 
     def createfile(self):
         # filename = string
+        # # file setup
+        self.filename = "data/"+ datetime.today().strftime('%Y-%m-%d %H:%M:%S') + ".csv" # file with today's datetime
+        self.filename = re.sub(r"\s",'_',self.filename) # sub any whitespace with underscore
+        self.filename = str(re.sub(r":",'-',self.filename)) # HH:MM:SS in .csv name causes github fetch request error
         print("Creating csv...",end="")
         file = open(self.filename,"a")
         file.write("count,elapsed_time,delay_time" + "\n")
