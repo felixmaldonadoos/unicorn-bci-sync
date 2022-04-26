@@ -137,10 +137,7 @@ class Application(object):
         # Stim listener run forever until CTRL+C
         while True:
             CURRENTTIME = time.time()
-            try:
-                data = self.s.recv(1024)
-            except OSError as e: 
-                print(f"{e}")
+            data = self.s.recv(1024)
             
             if (data):
                 ACQUIRETIME = time.time()
