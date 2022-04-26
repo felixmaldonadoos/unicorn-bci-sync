@@ -72,11 +72,9 @@ class Application():
 
     def threadstart(self):
         self.startthread = threading.Thread(target = self.connect).start()
-        self.startthread.join()
 
     def threadclose(self):
         self.closethread = threading.Thread(target =self.close).start()
-        self.closethread.join()
 
     def threadterminate(self):
         self.threadterminate = threading.Thread(target = self.terminate).start()
@@ -220,6 +218,10 @@ class Application():
         terminating window itself (red X or circle, depends on OS)
         """ 
         self.root.destroy()
+
+        if KeyboardInterrupt:
+            print("Keyboard Interrupt")
+
         
 if __name__ == "__main__":
     a = Application()
