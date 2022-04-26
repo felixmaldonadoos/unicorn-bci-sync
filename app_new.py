@@ -37,7 +37,7 @@ class Application():
         command = self.threadstart,bg='green')
 
         self.stopButton = tk.Button(self.root, height=4, width=20, text ="Sroot Run", 
-        command = target=self.threadclose,bg='yellow')
+        command = self.threadclose,bg='yellow')
 
         self.terminateButton = tk.Button(self.root, height=2, width=10, text ="Close", 
         command = self.closewindow,bg ='red')
