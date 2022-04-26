@@ -10,7 +10,7 @@ from tcp_latency import measure_latency
 import RPi.GPIO as GPIO 
 
   
-class Application(object):
+class Application():
     def __init__(self):
 
         # read file to extract IP and connections
