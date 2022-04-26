@@ -58,11 +58,6 @@ class Application():
         print(f"PORT to connect: {self.TCP_PORT}")
         print(f"Tobii Pin to connect: {self.PIN_LED}")
 
-        # GPIO setup
-        GPIO.setmode(GPIO.BCM)
-        GPIO.setwarnings(False)
-        GPIO.setup(self.PIN_LED,GPIO.OUT)
-
     def createfile(self):
         # filename = string
         # # file setup
@@ -165,6 +160,12 @@ class Application():
         self.s.close()
 
     def connect(self):
+        # GPIO setup
+        GPIO.setmode(GPIO.BCM)
+        GPIO.setwarnings(False)
+        GPIO.setup(self.PIN_LED,GPIO.OUT)
+        
+        # functions
         self.createsocket() 
         self.createfile()
         try:
