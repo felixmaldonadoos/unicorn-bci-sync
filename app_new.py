@@ -134,6 +134,7 @@ class Application(object):
     def listen(self):
         # timer
         STARTTIME = time.time()
+        self.COUNT = 0
 
         print("\nCOUNT, ELAPSED TIME (ms), DELAY TIME (ms):\n")
 
