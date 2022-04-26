@@ -168,7 +168,36 @@ class Application(object):
         self.createsocket() 
         self.createfile()
         try:
-            self.listen()
+            # timer
+        STARTTIME = time.time()
+
+        print("\nCOUNT, ELAPSED TIME (ms), DELAY TIME (ms):\n")
+
+        # Stim listener run forever until CTRL+C
+        while True:
+            CURRENTTIME = time.time()
+            data = self.s.recv(1024)
+            
+            if (data):
+                ACQUIRETIME = time.time()
+                self.COUNT += 1
+                # Openvibe sends 2 stims, ignores when button is released. if odd (first) save 
+                if (self.COUNT%2 == 1 ):
+                    
+                    # send stim
+                    self.sendstim()
+                    # get timestamp
+                    self.ELAPSEDTIME = CURRENTTIME - STARTTIME
+                    self.DELAYTIME = (ACQUIRETIME - CURRENTTIME) # not true "delay", time from previous press
+
+                    # counter to save on file
+                    self.STIMCOUNT += 1
+                    print(str(self.STIMCOUNT-1).zfill(2) + f"| {round(self.ELAPSEDTIME,6)} | {round(self.DELAYTIME,6)} ",end = "" ) # dont print new line
+
+                    # save timestamp to file
+                    self.savefile()
+                else:
+                    pass
         except KeyboardInterrupt:
             print("\nForced Interrupt.")
             self.root.destroy()
