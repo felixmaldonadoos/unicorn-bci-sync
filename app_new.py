@@ -58,10 +58,6 @@ class Application(object):
         print(f"PORT to connect: {self.TCP_PORT}")
         print(f"Tobii Pin to connect: {self.PIN_LED}")
 
-        # simple counters
-        self.COUNT = 0
-        self.STIMCOUNT = 0
-
         # GPIO setup
         GPIO.setmode(GPIO.BCM)
         GPIO.setwarnings(False)
@@ -174,6 +170,9 @@ class Application(object):
         try:
             # timer
             STARTTIME = time.time()
+            # simple counters
+            self.COUNT = 0
+            self.STIMCOUNT = 0
 
             print("\nCOUNT, ELAPSED TIME (ms), DELAY TIME (ms):\n")
 
