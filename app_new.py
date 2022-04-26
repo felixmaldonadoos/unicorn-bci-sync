@@ -34,7 +34,7 @@ class Application(object):
         self.labelIntro = tk.Label(self.root,text = "hello there!")
 
         self.startButton = tk.Button(self.root, height=4, width=20, text ="Start Run", 
-        command = threading.Thread(target=self.connect),bg='green')
+        command = threadstart,bg='green')
 
         self.stopButton = tk.Button(self.root, height=4, width=20, text ="Sroot Run", 
         command = threading.Thread(target=self.close),bg='yellow')
@@ -78,6 +78,9 @@ class Application(object):
         file.write("count,elapsed_time,delay_time" + "\n")
         file.close()
         print("OK.")
+
+    def threadstart(self):
+        self.thread = threading.Thread(target = self.connect).start()
 
     def createsocket(self):
 
