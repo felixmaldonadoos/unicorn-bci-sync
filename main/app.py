@@ -54,4 +54,4 @@ class Application(object):
         self.top.destroy()
 
 if __name__ == "__main__":
-    a = Application(script = "tcp2tobii")
+    a = Application(script = "test")
