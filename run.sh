@@ -1,7 +1,6 @@
 #!/bin/bash
 
 cd ~
-./vibe/bin
-source activate
+source ./vibe/bin/activate
 
 echo "activated!"
