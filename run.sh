@@ -5,4 +5,4 @@ source ./vibe/bin/activate
 echo "activated!"
 cd ~
 cd unicorn-bci-sync/main/
-python tcp2tobii.py
+gnome-terminal -- python tcp2tobii.py
