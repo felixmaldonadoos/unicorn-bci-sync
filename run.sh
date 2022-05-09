@@ -4,4 +4,5 @@ cd ~
 source ./vibe/bin/activate
 echo "activated!"
 cd ~
-python unicorn-bci-sync/main/app.py
+cd unicorn-bci-sync/main/
+python app.py
