@@ -1,6 +1,6 @@
 import time
 
 def pause():
-    print("Pausing for 5 seconds.")
-    time.sleep(5)
+    print("Pausing for 3 seconds.")
+    time.sleep(3)
     print("Ended.")
