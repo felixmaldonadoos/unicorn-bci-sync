@@ -78,6 +78,8 @@ class Application():
 
     def threadterminate(self):
         self.threadterminate = threading.Thread(target = self.terminate).start()
+        # test the following <> instead of ^^ 
+        # self.s.close()
 
     def createsocket(self):
 

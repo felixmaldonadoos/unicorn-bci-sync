@@ -2,9 +2,10 @@ import socket
 import time
 from datetime import datetime
 from tcp_latency import measure_latency
-#import RPi.GPIO as GPIO 
 import re
 import sys
+import tkinter as tk
+from subprocess import Popen
 
 class tcp2tobii():
 
@@ -37,10 +38,10 @@ class tcp2tobii():
         self.COUNT = 0
         self.STIMCOUNT = 0
 
-        # # GPIO setup
-        # GPIO.setmode(GPIO.BCM)
-        # GPIO.setwarnings(False)
-        # GPIO.setup(self.PIN_LED,GPIO.OUT)
+        # GPIO setup
+        GPIO.setmode(GPIO.BCM)
+        GPIO.setwarnings(False)
+        GPIO.setup(self.PIN_LED,GPIO.OUT)
 
     def createfile(self):
         # filename = string
@@ -54,7 +55,6 @@ class tcp2tobii():
 
         # create socket
         print("Trying to create socket...",end="")
-        
         try: 
             self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             print("OK.")
@@ -82,7 +82,6 @@ class tcp2tobii():
             print("Seems IP or port were disconnected.")
         print(latency)
 
-
     def sendstim(self):
         # uncomment prints for visualization
         #print ("rising")
@@ -101,6 +100,14 @@ class tcp2tobii():
         except:
             print("X")
 
+    def is_still_connected(self):
+        # not yet implemented
+        try:
+            self.s.sendall(b"ping")
+            return True
+        except:
+            return False
+
     def listen(self):
         # timer
         STARTTIME = time.time()
@@ -108,46 +115,41 @@ class tcp2tobii():
         print("\nCOUNT, ELAPSED TIME (ms), DELAY TIME (ms):\n")
 
         # Stim listener run forever until CTRL+C
-       
-        CURRENTTIME = time.time()
-        data = self.s.recv(1024)
-        
-        if (data):
-            ACQUIRETIME = time.time()
-            self.COUNT += 1
-            # Openvibe sends 2 stims, ignores when button is released. if odd (first) save 
-            if (self.COUNT%2 == 1 ):
-                
-                # send stim
-                #self.sendstim()
-                # get timestamp
-                self.ELAPSEDTIME = CURRENTTIME - STARTTIME
-                self.DELAYTIME = (ACQUIRETIME - CURRENTTIME) # not true "delay", time from previous press
+        while True:
+            CURRENTTIME = time.time()
+            data = self.s.recv(1024)
+            
+            if (data):
+                ACQUIRETIME = time.time()
+                self.COUNT += 1
+                # Openvibe sends 2 stims, ignores when button is released. if odd (first) save 
+                if (self.COUNT%2 == 1 ):
+                    
+                    # send stim
+                    self.sendstim()
+                    # get timestamp
+                    self.ELAPSEDTIME = CURRENTTIME - STARTTIME
+                    self.DELAYTIME = (ACQUIRETIME - CURRENTTIME) # not true "delay", time from previous press
 
-                # counter to save on file
-                self.STIMCOUNT += 1
-                print(str(self.STIMCOUNT-1).zfill(2) + f"| {round(self.ELAPSEDTIME,6)} | {round(self.DELAYTIME,6)} ",end = "" ) # dont print new line
+                    # counter to save on file
+                    self.STIMCOUNT += 1
+                    print(str(self.STIMCOUNT-1).zfill(2) + f"| {round(self.ELAPSEDTIME,6)} | {round(self.DELAYTIME,6)} ",end = "" ) # dont print new line
 
-                # save timestamp to file
-                self.savefile()
-                #close socket
-                self.s.close()
-            else:
-                pass
+                    # save timestamp to file
+                    self.savefile()
+                else:
+                    pass
       
 def main():
-    
-    run = tcp2tobii() 
+    run = tcp2tobii()
+    run.createsocket() 
     run.createfile()
     
-    while True:
-        try:
-            run.createsocket()
-            run.listen()
-        except KeyboardInterrupt: 
-            print("Interrupted")
-        except: 
-            print("other error.")
-
+    try:
+        run.listen()
+    except KeyboardInterrupt:
+        print("\nForced Interrupt.")
+        sys.exit(1)
+    
 if __name__ == "__main__":
     main()
