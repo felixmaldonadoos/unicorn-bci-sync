@@ -99,14 +99,6 @@ class tcp2tobii():
         except:
             print("X")
 
-    def is_still_connected(self):
-        # not yet implemented
-        try:
-            self.s.sendall(b"ping")
-            return True
-        except:
-            return False
-
     def listen(self):
         # timer
         STARTTIME = time.time()
