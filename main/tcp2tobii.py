@@ -73,13 +73,13 @@ class tcp2tobii():
             print(f"Connection error: {e}")
             sys.exit(1)
 
-        # check connection latency measure_latency(host,port,runs,timeout)
-        print("Verifying initial latency...",end="")
-        try:
-            latency = str(round(measure_latency(host=self.TCP_IP, port=self.TCP_PORT)[0],4))
-        except IndexError:
-            print("Seems IP or port were disconnected.")
-        print(latency)
+        # # check connection latency measure_latency(host,port,runs,timeout)
+        # print("Verifying initial latency...",end="")
+        # try:
+        #     latency = str(round(measure_latency(host=self.TCP_IP, port=self.TCP_PORT)[0],4))
+        # except IndexError:
+        #     print("Seems IP or port were disconnected.")
+        # print(latency)
 
     def sendstim(self):
         # uncomment prints for visualization
