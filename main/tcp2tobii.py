@@ -1,7 +1,6 @@
 import socket
 import time
 from datetime import datetime
-from tcp_latency import measure_latency
 import RPi.GPIO as GPIO 
 import re
 import sys
