@@ -53,3 +53,13 @@ this removes the need to need RaspberryPi peripherals to run code.
 - update ```delay_time``` algorithm bug (calculates time from previous sent stimulus)
 - create a class module
 
+
+# Known Issues
+
+1. ```RuntimeError: No access to /dev/mem.  Try running as root!``` (Ubuntu 18.04)
+This is a permissions issue, try running the following as ```sudo```: 
+```
+cd /dev
+sudo chmod og+rwx gpio*
+``` 
+ Now, run ```/unicorn-bci-cync/testcodes/test_blink.py``` and you should not get the error again. 
