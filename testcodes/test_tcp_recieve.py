@@ -2,7 +2,7 @@ import socket
 import time
 
 # socket setup
-TCP_IP = '10.0.0.92'
+TCP_IP = '144.118.57.240'
 TCP_PORT = 5678 # default tcp writer box
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
